@@ -1,3 +1,7 @@
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     padding: 0;
@@ -11,4 +15,35 @@ h1.title {
 form.upload {
     width: 50vw;
     margin: auto;
+}
+
+.displaylogs {
+    width: 60vw;
+    height: 60vh;
+    border: thin solid black;
+    margin: auto;
+    overflow-Y: auto;
+    display: inline-block;
+}
+
+.screen {
+    min-height: 100vh;
+}
+
+.right {
+    float: right;
+}
+
+.panel {
+    width: 90vw;
+    margin: auto;
+    padding-top: 10vh;
+}
+
+.panel h2 {
+    text-align: center;
+}
+
+.searchbar {
+    width: 100%;
 }
