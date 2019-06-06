@@ -2,7 +2,7 @@ ul, #Tree {
   list-style-type: none;
 }
 
-#myUL {
+#Tree {
   margin: 0;
   padding: 0;
 }
@@ -34,4 +34,8 @@ ul, #Tree {
 
 .active {
   display: block;
+}
+
+pre ul#Tree li:hover {
+  background-color: rgba(0,0,0,0.3);
 }
