@@ -129,6 +129,13 @@ class Interpret extends React.Component {
         this.state = {treemode: false};
     }
 
+    showDetails(obj) {
+        let list = [];
+        for (let i = 0; Object.keys(obj)[i]; i++)
+            list.push(<li>{Object.keys(obj)[i]}: {obj[Object.keys(obj)[i]]}</li>);
+        return (list);
+    }
+
     parselog(string) {
         if (!string)
             return ("Data unreadable");
@@ -143,7 +150,7 @@ class Interpret extends React.Component {
         let tree = [];
         let list = Object.keys(obj);
         for (let i = 0; list[i]; i++)
-            tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}>{this.parselog(obj[list[i]][0])} {obj[list[i]][obj[list[i]].length-1]}</span><ul className='nested'>{obj[list[i]][2]}</ul></li>);
+            tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}>{this.parselog(obj[list[i]][0])} {obj[list[i]][obj[list[i]].length-1]}</span><ul className='nested'>this.showDetails(obj[list[i]])</ul></li>);
         return (tree);
     }
 
