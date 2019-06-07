@@ -71,3 +71,15 @@ form.upload {
 .false {
   color: red;
 }
+
+canvas.canvas {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: block;
+    background-color: rgba(0,0,0,0.1)
+}
+
+div.date {
+    float: right;
+}

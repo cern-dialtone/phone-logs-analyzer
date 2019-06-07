@@ -4,6 +4,7 @@ import { Form, TextArea, Input, Menu, Checkbox } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import './index.css'
 import './tree.css'
+import { stringify } from 'querystring';
 
 const UploadForm = (props) => {
     return (<Form className="upload" id='file' onChange={props.onChange}>
@@ -44,13 +45,6 @@ class SystemData extends React.Component {
         for (let i = 0; list[i]; i++)
           listli.push(<li key={i}>{list[i]}</li>);
         return (<div>{listli}</div>);
-    }
-
-    webrtcinfos(webrtc) {
-        let list = [];
-        for (let i = 0; Object.keys(webrtc)[i]; i++)
-            list.push(<li key={i+"_"}>{Object.keys(webrtc)[i]}: {webrtc[Object.keys(webrtc)[i]] ? <span className='true'>true</span> : <span className='true'>false</span>}</li>);
-        return (list);
     }
 
     render() {
@@ -99,7 +93,7 @@ class SystemData extends React.Component {
 
                     <li><span className="caret" id='webrtc' onClick={() => { showCat('webrtc') }}>Webrtc</span>
                         <ul className="nested">
-                            {this.webrtcinfos(data.system.webrtc)}
+                            {showObject(data.system.webrtc)}
                         </ul>
                     </li>
                 </ul>
@@ -107,33 +101,58 @@ class SystemData extends React.Component {
     }
 }
 
-function Filters(props) {
-    return (
-        <div>
-        <h2>Filters</h2>
-        <Input focus placeholder='Search in logs' className='searchbar'/>
-        <Menu>
-            <Menu.Item>Tone_In</Menu.Item>
-            <Menu.Item>Tone_Out</Menu.Item>
-            <Menu.Item>SIP</Menu.Item>
-            <Menu.Item>Fail/Errors/Warnings</Menu.Item>
-            <Menu.Item>Reset all filters</Menu.Item>
-        </Menu>
-        </div>
-    );
+class Filters extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+    render() {
+        return (
+            <div>
+            <h2>Filters</h2>
+            <Input focus placeholder='Search in logs' className='searchbar' onChange={() => { this.props.handler({filter: document.getElementById('searchbar').value}) }} id='searchbar'/>
+            <Menu>
+                <Menu.Item onClick={() => { this.props.handler({filter: 'TONE_IN'}) }}>Tone_In</Menu.Item>
+                <Menu.Item onClick={() => { this.props.handler({filter: 'TONE_OUT'}) }}>Tone_Out</Menu.Item>
+                <Menu.Item onClick={() => { this.props.handler({filter: 'sip'}) }}>SIP</Menu.Item>
+                <Menu.Item onClick={() => { this.props.handler({filter: 'Fail'}) }}>Fail/Errors/Warnings</Menu.Item>
+                <Menu.Item onClick={() => { this.props.handler({filter: null}) }}>Reset all filters</Menu.Item>
+            </Menu>
+            </div>
+        );
+    }
+}
+
+function showObject(obj) {
+    if (typeof obj !== "object" || !obj)
+        return (<span key="_" className="false">Can't read data OR NULL<br/></span>);
+    let list = [];
+    for (let i = 0; Object.keys(obj)[i]; i++)
+    {
+        if (typeof obj[Object.keys(obj)[i]] === "boolean")
+            list.push(<span key={i+"_"}><b>{Object.keys(obj)[i]}:</b> {obj[Object.keys(obj)[i]] ? <span className='true'>true</span> : <span className='false'>false</span>}<br/></span>);
+        else if (typeof obj[Object.keys(obj)[i]] === "string")
+            list.push(<span key={i+"_"}><b>{Object.keys(obj)[i]}:</b> {obj[Object.keys(obj)[i]]}<br/></span>);
+        else if (typeof obj[Object.keys(obj)[i]] === "object")
+            list.push(<ul key={i+"_"}><b>{Object.keys(obj)[i]}:</b> {showObject(obj[Object.keys(obj)[i]])}</ul>);
+        else
+            list.push(<span key={i+"_"}><b>{Object.keys(obj)[i]}:</b> {stringify(obj[Object.keys(obj)[i]])}<br/></span>);
+    }
+    return (list);
+}
+
+function ShowDetails(props) {
+    let obj = props.value;
+    let list = [];
+    for (let a = 0; Object.keys(obj)[a]; a++)
+        list.push(<li key={a}>{(typeof obj[Object.keys(obj)[a]] === "object") ? showObject(obj[Object.keys(obj)[a]]) : obj[Object.keys(obj)[a]]}</li>);
+    return (list);
 }
 
 class Interpret extends React.Component {
     constructor(props) {
         super(props);
         this.state = {treemode: false};
-    }
-
-    showDetails(obj) {
-        let list = [];
-        for (let i = 0; Object.keys(obj)[i]; i++)
-            list.push(<li>{Object.keys(obj)[i]}: {obj[Object.keys(obj)[i]]}</li>);
-        return (list);
     }
 
     parselog(string) {
@@ -143,19 +162,21 @@ class Interpret extends React.Component {
         return (Array.isArray(list) ? list[1] : list);
     }
 
-    maketree(obj) {
+    maketree(obj, filters) {
         if (!obj)
             return;
-        console.log(obj);
         let tree = [];
         let list = Object.keys(obj);
         for (let i = 0; list[i]; i++)
-            tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}>{this.parselog(obj[list[i]][0])} {obj[list[i]][obj[list[i]].length-1]}</span><ul className='nested'>this.showDetails(obj[list[i]])</ul></li>);
+        {
+            if ((filters && obj[list[i]][0] && obj[list[i]][0].indexOf(filters) > -1) || !filters)
+              tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}>{this.parselog(obj[list[i]][0])} <div className="date">{obj[list[i]][obj[list[i]].length-1]}</div></span><ul className='nested'><ShowDetails value={obj[list[i]]}/></ul></li>);
+        }
         return (tree);
     }
 
     displaylogs() {
-        return (this.state.treemode ? <ul className="Tree">{this.maketree(convertJson(this.props.value))}</ul> : this.props.value);
+        return (this.state.treemode ? <ul className="Tree">{this.maketree(convertJson(this.props.value), this.props.filter)}</ul> : this.props.value);
     }
 
     treemodeavailable() {
@@ -191,12 +212,48 @@ class Interpret extends React.Component {
     }
 }
 
+class TimeLine extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    componentDidUpdate() {
+        if (!this.props.value)
+            return;
+        let logs = convertJson(this.props.value);
+        let canvas = document.getElementById('canvas');
+        let canv = canvas.getContext("2d");
+        canv.clearRect(0,0,9000,9000);
+        for (let i = 0; Object.keys(logs)[i]; i++)
+        {
+            canv.beginPath();
+            canv.moveTo(0, 0);
+            canv.lineTo(500,10);
+            canv.stroke();
+        }
+    }
+
+    render() {
+        if (this.props.value)
+            return (<canvas width={window.innerWidth} height={5*window.innerHeight/100} className="canvas" id="canvas"></canvas>);
+        else
+            return (<div></div>);
+    }
+}
+
 class Uploader extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
                     logs: null,
+                    filter: null,
                 };
+        this.handler = this.handler.bind(this);
+    }
+
+    handler(obj) {
+        this.setState(obj);
     }
 
     render() {
@@ -213,11 +270,12 @@ class Uploader extends React.Component {
           }} />
                 </div>
                 <div className="screen panel" id='interpret'>
-                    <Interpret value={this.state.logs}/>
+                    <Interpret value={this.state.logs} filter={this.state.filter}/>
                     <div className="right">
-                        <Filters />
+                        <Filters handler={this.handler}/>
                         <SystemData value={this.state.logs}/>
                     </div>
+                    <TimeLine value={(isJson(this.state.logs)) ? this.state.logs : null} handler={this.handler}/>
                 </div>
             </div>
         );
