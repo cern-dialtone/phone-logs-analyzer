@@ -19,6 +19,13 @@ function showCat(id) {
     document.getElementById(id).classList.toggle("caret-down");
 }
 
+function parselog(string) {
+    if (!string)
+        return ("Data unreadable");
+    let list = (string.indexOf('|') > -1) ? string.split("|") : string;
+    return (Array.isArray(list) ? list[1] : list);
+}
+
 function convertJson(json) {
     if (isJson(json))
         return JSON.parse(json);
@@ -52,6 +59,8 @@ class SystemData extends React.Component {
         if (!this.props || !this.props.value || !(data = convertJson(this.props.value)))
             return (<h3>No valid data detected.</h3>);
             data = data[data.length-1];
+            if (!data.system)
+                return (<h3>Required informations not found</h3>);
             return (
                 <ul id="Tree">
                     <li><span className="caret" id='browser' onClick={() => { showCat('browser') }}>Browser</span>
@@ -155,13 +164,6 @@ class Interpret extends React.Component {
         this.state = {treemode: false};
     }
 
-    parselog(string) {
-        if (!string)
-            return ("Data unreadable");
-        let list = (string.indexOf('|') > -1) ? string.split("|") : string;
-        return (Array.isArray(list) ? list[1] : list);
-    }
-
     maketree(obj, filters) {
         if (!obj)
             return;
@@ -170,7 +172,8 @@ class Interpret extends React.Component {
         for (let i = 0; list[i]; i++)
         {
             if ((filters && obj[list[i]][0] && obj[list[i]][0].indexOf(filters) > -1) || !filters)
-              tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}>{this.parselog(obj[list[i]][0])} <div className="date">{obj[list[i]][obj[list[i]].length-1]}</div></span><ul className='nested'><ShowDetails value={obj[list[i]]}/></ul></li>);
+              tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}><div className="action">{parselog(obj[list[i]][0])}
+              </div><div className="date">{obj[list[i]][obj[list[i]].length-1]}</div></span><ul className='nested'><ShowDetails value={obj[list[i]]}/></ul></li>);
         }
         return (tree);
     }
@@ -224,13 +227,15 @@ class TimeLine extends React.Component {
         let logs = convertJson(this.props.value);
         let canvas = document.getElementById('canvas');
         let canv = canvas.getContext("2d");
+        canv.width = window.innerWidth;
+        canv.height = 5*window.innerHeight/100;
         canv.clearRect(0,0,9000,9000);
+        console.log(logs);
+    //    let timedata = [];
         for (let i = 0; Object.keys(logs)[i]; i++)
         {
-            canv.beginPath();
-            canv.moveTo(0, 0);
-            canv.lineTo(500,10);
-            canv.stroke();
+            console.log(logs[Object.keys(logs)[i]][logs[Object.keys(logs)[i]].length-1]);
+            //timedata[].push();
         }
     }
 
@@ -239,6 +244,39 @@ class TimeLine extends React.Component {
             return (<canvas width={window.innerWidth} height={5*window.innerHeight/100} className="canvas" id="canvas"></canvas>);
         else
             return (<div></div>);
+    }
+}
+
+class Events extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {};
+    }
+
+    OpenCloseModal() {
+        document.getElementById('openclose').classList.toggle('open');
+        document.getElementById('eventlist').classList.toggle('open');
+    }
+
+    eventlist() {
+        let data = convertJson(this.props.value);
+        if (!data)
+            return "No data";
+        let tree = [];
+        for (let i = 0; Object.keys(data)[i]; i++){
+            console.log(i);
+            tree.push(<div key={i} className="event">{parselog(data[Object.keys(data)[i]][0])}</div>);
+        }
+              return (tree);
+    }
+
+    render() {
+        return (<div className="modal eventlist" id="eventlist">
+            <div className="openclose" onClick={() => { this.OpenCloseModal() }} id="openclose">></div>
+            <div className="list">
+            <h3>Events list</h3>
+            {this.eventlist()}
+            </div></div>);
     }
 }
 
@@ -276,6 +314,7 @@ class Uploader extends React.Component {
                         <SystemData value={this.state.logs}/>
                     </div>
                     <TimeLine value={(isJson(this.state.logs)) ? this.state.logs : null} handler={this.handler}/>
+                    <Events value={this.state.logs}/>
                 </div>
             </div>
         );
