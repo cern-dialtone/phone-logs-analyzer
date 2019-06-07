@@ -231,12 +231,17 @@ class TimeLine extends React.Component {
         canv.height = 5*window.innerHeight/100;
         canv.clearRect(0,0,9000,9000);
         console.log(logs);
-    //    let timedata = [];
+        let timedata = [];
+        let date = null;
         for (let i = 0; Object.keys(logs)[i]; i++)
         {
-            console.log(logs[Object.keys(logs)[i]][logs[Object.keys(logs)[i]].length-1]);
-            //timedata[].push();
+            date = new Date(logs[i][logs[i].length-1]).getTime();
+            if (date && timedata[date] >= 1)
+                timedata[date]++;
+            else if (date && !timedata[date])
+                timedata[date] = 1;
         }
+        console.log(timedata);
     }
 
     render() {
@@ -263,11 +268,9 @@ class Events extends React.Component {
         if (!data)
             return "No data";
         let tree = [];
-        for (let i = 0; Object.keys(data)[i]; i++){
-            console.log(i);
+        for (let i = 0; Object.keys(data)[i]; i++)
             tree.push(<div key={i} className="event">{parselog(data[Object.keys(data)[i]][0])}</div>);
-        }
-              return (tree);
+        return (tree);
     }
 
     render() {
