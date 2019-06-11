@@ -17,10 +17,8 @@ export default timedata;
 function indexOfArray(txt, values)
 {
     for (let a = 0; values[a]; a++)
-    {
-        if (txt.indexOf(values[a]) > -1)
+        if (txt.toUpperCase().indexOf(values[a].toUpperCase()) > -1)
             return true;
-    }
     return false;
 }
 
@@ -152,8 +150,8 @@ class TimeLine extends React.Component {
         for (let i = 0; logs[i][0]; i++)
         {
             if (logs[i][0].indexOf("Error") > -1 ||
-            logs[i][0].indexOf("Warning") > -1 ||
-            logs[i][0].indexOf("Fail") > -1)
+                logs[i][0].indexOf("Warning") > -1 ||
+                logs[i][0].indexOf("Fail") > -1)
             {
                 canv.beginPath();
                 canv.moveTo((i*window.innerWidth/logs.length), 0);
