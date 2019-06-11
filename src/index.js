@@ -154,6 +154,7 @@ class TimeLine extends React.Component {
         )
       ]
     });
+    document.getElementById('cursor').style.left=x.clientX+"px";
   }
 
   componentDidUpdate() {
@@ -227,9 +228,10 @@ class TimeLine extends React.Component {
           id="timeline"
           onMouseMove={e => this.getTimeline(e, timedata)}
         >
+        <div id="cursor"></div>
           <canvas
             width={window.innerWidth - 20}
-            height={(7 * window.innerHeight) / 100 - 20}
+            height={(10 * window.innerHeight) / 100 - 20}
             className="canvas"
             id="canvas"
           />

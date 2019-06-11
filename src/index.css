@@ -163,3 +163,11 @@ div.action {
 #home.active {
     display: none;
 }
+
+#cursor {
+    position: absolute;
+    height: 100%;
+    width: 5px;
+    background-color: black;
+    bottom: 0px;
+}
