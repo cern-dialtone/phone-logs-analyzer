@@ -151,3 +151,15 @@ div.action {
 .modal .list .event:hover {
     background-color: rgba(0,0,0,0.1)
 }
+
+#interpret {
+    display: none;
+}
+
+#interpret.active {
+    display: block;
+}
+
+#home.active {
+    display: none;
+}

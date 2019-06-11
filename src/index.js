@@ -35,7 +35,7 @@ class Interpret extends React.Component {
         let list = Object.keys(obj);
         for (let i = 0; list[i]; i++)
         {
-            if (((filters && obj[list[i]][0] && obj[list[i]].indexOf(filters) > -1) || !filters))
+            if (((filters && obj[list[i]][0] && obj[list[i]][0].indexOf(filters) > -1) || !filters))
             {
                 if ((time && parseInt(Date.parse(obj[list[i]][obj[list[i]].length-1])) === parseInt(time)) || !time) {
                     tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}><div className="action">{parselog(obj[list[i]][0])}
@@ -89,7 +89,7 @@ class TimeLine extends React.Component {
         this.state = {
             max: 0,
             min: 9999999,
-            loaded: false
+            loaded: false,
         };
     }
 
@@ -100,7 +100,7 @@ class TimeLine extends React.Component {
     }
 
     componentDidUpdate() {
-        if (!this.props.value || this.state.loaded)
+        if (!this.props.value)
             return;
         let logs = convertJson(this.props.value);
         let canvas = document.getElementById('canvas');
@@ -134,11 +134,10 @@ class TimeLine extends React.Component {
             }
             else
                 canv.moveTo(lastdot.x, lastdot.y);
-            canv.lineWidth = 1;
+            canv.lineWidth = 3;
             canv.lineTo((lastdot.x += (canv.width/(Object.keys(timedata).length-1))), (lastdot.y = canv.height - (timedata[Object.keys(timedata)[i]]*canv.height/max)));
             canv.stroke();
         }
-        this.setState({loaded: true});
     }
 
     render() {
@@ -198,18 +197,17 @@ class Uploader extends React.Component {
     render() {
         return (
             <div>
-                <div className="screen">
+                <div className="screen" id='home'>
                 <h1 className="title">Logs analyzer</h1>
                 <UploadForm onChange={() => { this.setState({logs: document.getElementById('paste').value});
-                if (isJson(document.getElementById('paste').value)) { 
-        window.scrollTo({
-            top: window.innerHeight,
-            left: 0,
-            behavior: 'smooth'
-          }); }
+                if (isJson(document.getElementById('paste').value)){
+                    document.getElementById('interpret').classList.toggle("active");
+                    document.getElementById('home').classList.toggle("active");
+                }
           }} />
                 </div>
                 <div className="screen panel" id='interpret'>
+                <h1>Logs analyzer <button onClick={() => { document.getElementById('home').classList.toggle('active'); document.getElementById('interpret').classList.toggle('active'); }}>Change log file</button></h1>
                     <Interpret value={this.state.logs} filter={this.state.filter} time={this.state.timeline}/>
                     <div className="right">
                         <Filters handler={this.handler}/>

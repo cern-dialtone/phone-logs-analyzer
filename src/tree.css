@@ -32,7 +32,7 @@ ul, #Tree {
   display: none;
 }
 
-.active {
+.nested.active {
   display: block;
   background-color: rgba(225,225,225,1);
 }

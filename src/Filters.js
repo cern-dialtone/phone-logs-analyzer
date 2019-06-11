@@ -8,7 +8,7 @@ export class Filters extends React.Component {
     render() {
         return (<div>
             <h2>Filters</h2>
-            <Input focus placeholder='Search in logs' className='searchbar' onChange={() => { this.props.handler({ filter: document.getElementById('searchbar').value }); }} id='searchbar' />
+            <Input focus placeholder='Search in logs' className='searchbar' onChange={() => { this.props.handler({ filter: document.getElementById('searchbar').value, timeline: null }); }} id='searchbar' />
             <Menu>
                 <Menu.Item onClick={() => { this.props.handler({ filter: 'TONE_IN' }); }}>Tone_In</Menu.Item>
                 <Menu.Item onClick={() => { this.props.handler({ filter: 'TONE_OUT' }); }}>Tone_Out</Menu.Item>
