@@ -14,6 +14,16 @@ var timedata = [];
 
 export default timedata;
 
+function indexOfArray(txt, values)
+{
+    for (let a = 0; values[a]; a++)
+    {
+        if (txt.indexOf(values[a]) > -1)
+            return true;
+    }
+    return false;
+}
+
 function ShowDetails(props) {
     let obj = props.value;
     let list = [];
@@ -35,7 +45,7 @@ class Interpret extends React.Component {
         let list = Object.keys(obj);
         for (let i = 0; list[i]; i++)
         {
-            if (((filters && obj[list[i]][0] && obj[list[i]][0].indexOf(filters) > -1) || !filters))
+            if (((filters && obj[list[i]][0] && indexOfArray(obj[list[i]][0], filters)) || !filters))
             {
                 if ((time && parseInt(Date.parse(obj[list[i]][obj[list[i]].length-1])) === parseInt(time)) || !time) {
                     tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}><div className="action">{parselog(obj[list[i]][0])}
@@ -136,7 +146,21 @@ class TimeLine extends React.Component {
                 canv.moveTo(lastdot.x, lastdot.y);
             canv.lineWidth = 3;
             canv.lineTo((lastdot.x += (canv.width/(Object.keys(timedata).length-1))), (lastdot.y = canv.height - (timedata[Object.keys(timedata)[i]]*canv.height/max)));
+            canv.strokeStyle = "black";
             canv.stroke();
+        }
+        for (let i = 0; logs[i][0]; i++)
+        {
+            if (logs[i][0].indexOf("Error") > -1 ||
+            logs[i][0].indexOf("Warning") > -1 ||
+            logs[i][0].indexOf("Fail") > -1)
+            {
+                canv.beginPath();
+                canv.moveTo((i*window.innerWidth/logs.length), 0);
+                canv.lineTo((i*window.innerWidth/logs.length), canv.height);
+                canv.strokeStyle = "red";
+                canv.stroke();
+            }
         }
     }
 
