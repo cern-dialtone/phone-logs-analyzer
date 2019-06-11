@@ -1,154 +1,18 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { Form, TextArea, Input, Menu, Checkbox } from 'semantic-ui-react'
+import { Checkbox } from 'semantic-ui-react'
 import 'semantic-ui-css/semantic.min.css'
 import './index.css'
 import './tree.css'
-import { stringify } from 'querystring';
+import { UploadForm } from './UploadForm';
+import { convertJson, showCat, parselog, isJson } from './showCat';
+import { SystemData } from './SystemData';
+import { Filters } from './Filters';
+import { showObject } from './showObject';
 
-const UploadForm = (props) => {
-    return (<Form className="upload" id='file' onChange={props.onChange}>
-        <input type="file"/>
-      <TextArea placeholder='Paste logs' id='paste' style={{marginTop: 50}}/>
-    </Form>);
-}
-export default UploadForm
+var timedata = [];
 
-function showCat(id) {
-    document.getElementById(id).parentElement.querySelector(".nested").classList.toggle("active");
-    document.getElementById(id).classList.toggle("caret-down");
-}
-
-function parselog(string) {
-    if (!string)
-        return ("Data unreadable");
-    let list = (string.indexOf('|') > -1) ? string.split("|") : string;
-    return (Array.isArray(list) ? list[1] : list);
-}
-
-function convertJson(json) {
-    if (isJson(json))
-        return JSON.parse(json);
-    return false;
-}
-
-function isJson(txt) {
-    try {
-        JSON.parse(txt);
-    } catch (e) {
-        return false;
-    }
-    return (txt ? true : false);
-}
-
-class SystemData extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {showinginfos: false};
-    }
-
-    listdevices(list) {
-        let listli = [];
-        for (let i = 0; list[i]; i++)
-          listli.push(<li key={i}>{list[i]}</li>);
-        return (<div>{listli}</div>);
-    }
-
-    render() {
-        let data;
-        if (!this.props || !this.props.value || !(data = convertJson(this.props.value)))
-            return (<h3>No valid data detected.</h3>);
-            data = data[data.length-1];
-            if (!data.system)
-                return (<h3>Required informations not found</h3>);
-            return (
-                <ul id="Tree">
-                    <li><span className="caret" id='browser' onClick={() => { showCat('browser') }}>Browser</span>
-                        <ul className="nested">
-                            <li>{data.system.browser.name}</li>
-                            <li>{data.system.browser.version}</li>
-                        </ul>
-                    </li>
-
-                    <li><span className="caret" id='ip' onClick={() => { showCat('ip') }}>IP</span>
-                        <ul className="nested">
-                            <li>{data.system.ip.address}</li>
-                            <li>{data.system.ip.ipv4 ? 'Ipv4' : 'NOT IPV4'}</li>
-                        </ul>
-                    </li>
-
-                    <li><span className="caret" id='os' onClick={() => { showCat('os') }}>OS</span>
-                        <ul className="nested">
-                            <li>{data.system.os.name}</li>
-                            <li>{data.system.os.version}</li>
-                            <li>{data.system.os.resolution}</li>
-                        </ul>
-                    </li>
-
-                    <li><span className="caret" id='devices' onClick={() => { showCat('devices') }}>Devices</span>
-                        <ul className="nested">
-                            <li><span className="caret" id='micro' onClick={() => { showCat('micro') }}>Microphones</span>
-                                <ul className="nested">
-                                    {this.listdevices(data.system.devices.microphones.labels)}
-                                </ul>
-                            </li>
-                            <li><span className="caret" id='speakers' onClick={() => { showCat('speakers') }}>Speakers</span>
-                                <ul className="nested">
-                                    {this.listdevices(data.system.devices.speakers.labels)}
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-
-                    <li><span className="caret" id='webrtc' onClick={() => { showCat('webrtc') }}>Webrtc</span>
-                        <ul className="nested">
-                            {showObject(data.system.webrtc)}
-                        </ul>
-                    </li>
-                </ul>
-            );
-    }
-}
-
-class Filters extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {};
-    }
-    render() {
-        return (
-            <div>
-            <h2>Filters</h2>
-            <Input focus placeholder='Search in logs' className='searchbar' onChange={() => { this.props.handler({filter: document.getElementById('searchbar').value}) }} id='searchbar'/>
-            <Menu>
-                <Menu.Item onClick={() => { this.props.handler({filter: 'TONE_IN'}) }}>Tone_In</Menu.Item>
-                <Menu.Item onClick={() => { this.props.handler({filter: 'TONE_OUT'}) }}>Tone_Out</Menu.Item>
-                <Menu.Item onClick={() => { this.props.handler({filter: 'sip'}) }}>SIP</Menu.Item>
-                <Menu.Item onClick={() => { this.props.handler({filter: 'Fail'}) }}>Fail/Errors/Warnings</Menu.Item>
-                <Menu.Item onClick={() => { this.props.handler({filter: null}) }}>Reset all filters</Menu.Item>
-            </Menu>
-            </div>
-        );
-    }
-}
-
-function showObject(obj) {
-    if (typeof obj !== "object" || !obj)
-        return (<span key="_" className="false">Can't read data OR NULL<br/></span>);
-    let list = [];
-    for (let i = 0; Object.keys(obj)[i]; i++)
-    {
-        if (typeof obj[Object.keys(obj)[i]] === "boolean")
-            list.push(<span key={i+"_"}><b>{Object.keys(obj)[i]}:</b> {obj[Object.keys(obj)[i]] ? <span className='true'>true</span> : <span className='false'>false</span>}<br/></span>);
-        else if (typeof obj[Object.keys(obj)[i]] === "string")
-            list.push(<span key={i+"_"}><b>{Object.keys(obj)[i]}:</b> {obj[Object.keys(obj)[i]]}<br/></span>);
-        else if (typeof obj[Object.keys(obj)[i]] === "object")
-            list.push(<ul key={i+"_"}><b>{Object.keys(obj)[i]}:</b> {showObject(obj[Object.keys(obj)[i]])}</ul>);
-        else
-            list.push(<span key={i+"_"}><b>{Object.keys(obj)[i]}:</b> {stringify(obj[Object.keys(obj)[i]])}<br/></span>);
-    }
-    return (list);
-}
+export default timedata;
 
 function ShowDetails(props) {
     let obj = props.value;
@@ -164,22 +28,26 @@ class Interpret extends React.Component {
         this.state = {treemode: false};
     }
 
-    maketree(obj, filters) {
+    maketree(obj, filters, time) {
         if (!obj)
             return;
         let tree = [];
         let list = Object.keys(obj);
         for (let i = 0; list[i]; i++)
         {
-            if ((filters && obj[list[i]][0] && obj[list[i]][0].indexOf(filters) > -1) || !filters)
-              tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}><div className="action">{parselog(obj[list[i]][0])}
-              </div><div className="date">{obj[list[i]][obj[list[i]].length-1]}</div></span><ul className='nested'><ShowDetails value={obj[list[i]]}/></ul></li>);
+            if (((filters && obj[list[i]][0] && obj[list[i]].indexOf(filters) > -1) || !filters))
+            {
+                if ((time && parseInt(Date.parse(obj[list[i]][obj[list[i]].length-1])) === parseInt(time)) || !time) {
+                    tree.push(<li key={i}><span className='caret' id={i} onClick={() => { showCat(i) }}><div className="action">{parselog(obj[list[i]][0])}
+                    </div><div className="date">{obj[list[i]][obj[list[i]].length-1]}</div></span><ul className='nested'><ShowDetails value={obj[list[i]]}/></ul></li>);
+                }
+            }
         }
         return (tree);
     }
 
     displaylogs() {
-        return (this.state.treemode ? <ul className="Tree">{this.maketree(convertJson(this.props.value), this.props.filter)}</ul> : this.props.value);
+        return (this.state.treemode ? <ul className="Tree">{this.maketree(convertJson(this.props.value), this.props.filter, this.props.time)}</ul> : this.props.value);
     }
 
     treemodeavailable() {
@@ -218,20 +86,28 @@ class Interpret extends React.Component {
 class TimeLine extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {};
+        this.state = {
+            max: 0,
+            min: 9999999,
+            loaded: false
+        };
+    }
+
+    getTimeline(x, timedata) {
+        if (!timedata)
+            return;
+        this.props.handler({timeline: Object.keys(timedata)[Math.round(x.clientX*(Object.keys(timedata).length-1)/window.innerWidth)]});
     }
 
     componentDidUpdate() {
-        if (!this.props.value)
+        if (!this.props.value || this.state.loaded)
             return;
         let logs = convertJson(this.props.value);
         let canvas = document.getElementById('canvas');
         let canv = canvas.getContext("2d");
-        canv.width = window.innerWidth;
-        canv.height = 5*window.innerHeight/100;
+        canv.width = document.getElementById('canvas').width;
+        canv.height = document.getElementById('canvas').height-10;
         canv.clearRect(0,0,9000,9000);
-        console.log(logs);
-        let timedata = [];
         let date = null;
         for (let i = 0; Object.keys(logs)[i]; i++)
         {
@@ -241,12 +117,33 @@ class TimeLine extends React.Component {
             else if (date && !timedata[date])
                 timedata[date] = 1;
         }
-        console.log(timedata);
+        let min = 999999;
+        let max = 0;
+        for (let i = 0; Object.keys(timedata)[i]; i++)
+        {
+            max = (timedata[Object.keys(timedata)[i]] > max) ? timedata[Object.keys(timedata)[i]] : max;
+            min = (timedata[Object.keys(timedata)[i]] < min) ? timedata[Object.keys(timedata)[i]] : min;
+        }
+        let lastdot = {x: 0, y: canv.height};
+        for (let i = 0; Object.keys(timedata)[i]; i++)
+        {
+            canv.beginPath();
+            if (i === 0) {
+                canv.moveTo(0, (lastdot.y = canv.height - (timedata[Object.keys(timedata)[i]]*canv.height/max)));
+                i++;
+            }
+            else
+                canv.moveTo(lastdot.x, lastdot.y);
+            canv.lineWidth = 1;
+            canv.lineTo((lastdot.x += (canv.width/(Object.keys(timedata).length-1))), (lastdot.y = canv.height - (timedata[Object.keys(timedata)[i]]*canv.height/max)));
+            canv.stroke();
+        }
+        this.setState({loaded: true});
     }
 
     render() {
         if (this.props.value)
-            return (<canvas width={window.innerWidth} height={5*window.innerHeight/100} className="canvas" id="canvas"></canvas>);
+            return (<div className="timeline" id="timeline" onMouseMove={(e) => this.getTimeline(e, timedata)}><canvas width={window.innerWidth-20} height={7*window.innerHeight/100-20} className="canvas" id="canvas"></canvas></div>);
         else
             return (<div></div>);
     }
@@ -289,6 +186,7 @@ class Uploader extends React.Component {
         this.state = {
                     logs: null,
                     filter: null,
+                    timeline: null,
                 };
         this.handler = this.handler.bind(this);
     }
@@ -302,16 +200,17 @@ class Uploader extends React.Component {
             <div>
                 <div className="screen">
                 <h1 className="title">Logs analyzer</h1>
-                <UploadForm onChange={() => { this.setState({logs: document.getElementById('paste').value}); 
+                <UploadForm onChange={() => { this.setState({logs: document.getElementById('paste').value});
+                if (isJson(document.getElementById('paste').value)) { 
         window.scrollTo({
             top: window.innerHeight,
             left: 0,
             behavior: 'smooth'
-          });
+          }); }
           }} />
                 </div>
                 <div className="screen panel" id='interpret'>
-                    <Interpret value={this.state.logs} filter={this.state.filter}/>
+                    <Interpret value={this.state.logs} filter={this.state.filter} time={this.state.timeline}/>
                     <div className="right">
                         <Filters handler={this.handler}/>
                         <SystemData value={this.state.logs}/>
