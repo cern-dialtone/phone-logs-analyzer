@@ -154,7 +154,7 @@ class TimeLine extends React.Component {
         )
       ]
     });
-    document.getElementById('cursor').style.left=x.clientX+"px";
+    document.getElementById('cursor').style.left = x.clientX + 'px';
   }
 
   componentDidUpdate() {
@@ -228,7 +228,7 @@ class TimeLine extends React.Component {
           id="timeline"
           onMouseMove={e => this.getTimeline(e, timedata)}
         >
-        <div id="cursor"></div>
+          <div id="cursor" />
           <canvas
             width={window.innerWidth - 20}
             height={(10 * window.innerHeight) / 100 - 20}
@@ -302,10 +302,10 @@ class Uploader extends React.Component {
   }
 
   loadJson(e) {
-    this.setState({logs: e});
+    this.setState({ logs: e });
     this.changePanel();
   }
-  
+
   changePanel() {
     if (isJson(this.state.logs)) {
       document.getElementById('interpret').classList.toggle('active');
@@ -319,18 +319,19 @@ class Uploader extends React.Component {
         <div className="screen" id="home">
           <h1 className="title">Logs analyzer</h1>
           <UploadForm
-            onChange={(e) => {
-            if (document.getElementById('paste').value) {
-              this.setState({logs: document.getElementById('paste').value});
+            onChange={e => {
+              if (document.getElementById('paste').value) {
+                this.setState({ logs: document.getElementById('paste').value });
+                this.changePanel();
+                return;
+              } else if (e.target.files[0]) {
+                let reader = new FileReader();
+                reader.onloadend = e => {
+                  this.loadJson(e.target.result);
+                };
+                reader.readAsText(e.target.files[0]);
+              }
               this.changePanel();
-              return;
-            }
-            else if (e.target.files[0]) {
-              let reader = new FileReader();
-              reader.onloadend = (e) => { this.loadJson(e.target.result) };
-              reader.readAsText(e.target.files[0]);
-            }
-            this.changePanel();
             }}
           />
         </div>
