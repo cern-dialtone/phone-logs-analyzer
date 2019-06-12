@@ -301,18 +301,36 @@ class Uploader extends React.Component {
     this.setState(obj);
   }
 
+  loadJson(e) {
+    this.setState({logs: e});
+    this.changePanel();
+  }
+  
+  changePanel() {
+    if (isJson(this.state.logs)) {
+      document.getElementById('interpret').classList.toggle('active');
+      document.getElementById('home').classList.toggle('active');
+    }
+  }
+
   render() {
     return (
       <div>
         <div className="screen" id="home">
           <h1 className="title">Logs analyzer</h1>
           <UploadForm
-            onChange={() => {
-              this.setState({ logs: document.getElementById('paste').value });
-              if (isJson(document.getElementById('paste').value)) {
-                document.getElementById('interpret').classList.toggle('active');
-                document.getElementById('home').classList.toggle('active');
-              }
+            onChange={(e) => {
+            if (document.getElementById('paste').value) {
+              this.setState({logs: document.getElementById('paste').value});
+              this.changePanel();
+              return;
+            }
+            else if (e.target.files[0]) {
+              let reader = new FileReader();
+              reader.onloadend = (e) => { this.loadJson(e.target.result) };
+              reader.readAsText(e.target.files[0]);
+            }
+            this.changePanel();
             }}
           />
         </div>
