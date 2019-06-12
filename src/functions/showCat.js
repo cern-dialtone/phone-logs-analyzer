@@ -23,7 +23,8 @@ export function isJson(txt) {
   } catch (e) {
     return false;
   }
-  return txt ? true : false;
+  let data = JSON.parse(txt);
+  return txt && data[data.length-1] && data[data.length-1].system ? true : false;
 }
 export function indexOfArray(txt, values) {
   for (let a = 0; values[a]; a++)
