@@ -41,3 +41,15 @@ ul,
 pre ul#Tree li:hover {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+div.date {
+  float: right;
+  background-color: white;
+}
+
+div.action {
+  width: 60%;
+  height: 18px;
+  display: inline-block;
+  overflow: hidden;
+}

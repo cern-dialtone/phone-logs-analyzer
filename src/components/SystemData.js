@@ -1,6 +1,7 @@
 import React from 'react';
-import { convertJson, showCat } from './showCat';
-import { showObject } from './showObject';
+import { convertJson, showCat } from '../functions/showCat';
+import { showObject } from '../functions/showObject';
+
 export class SystemData extends React.Component {
   constructor(props) {
     super(props);
@@ -20,7 +21,7 @@ export class SystemData extends React.Component {
     )
       return <h3>No valid data detected.</h3>;
     data = data[data.length - 1];
-    if (!data.system) return <h3>Required informations not found</h3>;
+    if (!data || !data.system) return <h3>Required informations not found</h3>;
     return (
       <ul id="Tree">
         <li>

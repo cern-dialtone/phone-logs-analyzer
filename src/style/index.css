@@ -33,6 +33,7 @@ form.upload {
 
 .right {
   float: right;
+  width: 25vw;
 }
 
 .panel {
@@ -47,6 +48,10 @@ form.upload {
 
 .searchbar {
   width: 100%;
+}
+
+.ui.menu:not(.vertical) {
+  overflow: hidden;
 }
 
 .treemode {
@@ -86,18 +91,6 @@ canvas.canvas {
   bottom: 0;
   left: 0;
   background-color: rgba(0, 0, 0, 0.1);
-}
-
-div.date {
-  float: right;
-  background-color: white;
-}
-
-div.action {
-  width: 60%;
-  height: 18px;
-  display: inline-block;
-  overflow: hidden;
 }
 
 .modal {
