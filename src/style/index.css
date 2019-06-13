@@ -21,7 +21,6 @@ form.upload {
 .displaylogs {
   width: 60vw;
   height: 60vh;
-  border: thin solid black;
   margin: auto;
   overflow-y: auto;
   display: inline-block;
@@ -33,13 +32,13 @@ form.upload {
 
 .right {
   float: right;
-  width: 25vw;
+  width: 28vw;
 }
 
 .panel {
   width: 90vw;
   margin: auto;
-  padding-top: 5vh;
+  padding-top: 1vh;
 }
 
 .panel h2 {
@@ -164,4 +163,28 @@ canvas.canvas {
   width: 5px;
   background-color: black;
   bottom: 0px;
+}
+
+a.showless {
+  content: 'show less';
+}
+
+div.showless {
+  display: block;
+}
+
+div.infosless {
+  display: none;
+}
+
+.activefilter {
+  background-color: rgba(0,204,102,0.8);
+}
+
+#time {
+  background-color: black;
+  color: white;
+  padding: 5px;
+  position: absolute;
+  top: 0px;
 }

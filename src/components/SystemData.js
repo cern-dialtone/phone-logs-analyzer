@@ -26,7 +26,7 @@ export class SystemData extends React.Component {
       <ul id="Tree">
         <li>
           <span
-            className="caret"
+            className="caret caret-down"
             id="browser"
             onClick={() => {
               showCat('browser');
@@ -34,7 +34,7 @@ export class SystemData extends React.Component {
           >
             Browser
           </span>
-          <ul className="nested">
+          <ul className="nested active">
             <li>{data.system.browser.name}</li>
             <li>{data.system.browser.version}</li>
           </ul>
@@ -42,7 +42,7 @@ export class SystemData extends React.Component {
 
         <li>
           <span
-            className="caret"
+            className="caret caret-down"
             id="ip"
             onClick={() => {
               showCat('ip');
@@ -50,7 +50,7 @@ export class SystemData extends React.Component {
           >
             IP
           </span>
-          <ul className="nested">
+          <ul className="nested active">
             <li>{data.system.ip.address}</li>
             <li>{data.system.ip.ipv4 ? 'Ipv4' : 'NOT IPV4'}</li>
           </ul>
@@ -58,7 +58,7 @@ export class SystemData extends React.Component {
 
         <li>
           <span
-            className="caret"
+            className="caret caret-down"
             id="os"
             onClick={() => {
               showCat('os');
@@ -66,7 +66,7 @@ export class SystemData extends React.Component {
           >
             OS
           </span>
-          <ul className="nested">
+          <ul className="nested active">
             <li>{data.system.os.name}</li>
             <li>{data.system.os.version}</li>
             <li>{data.system.os.resolution}</li>
@@ -75,7 +75,7 @@ export class SystemData extends React.Component {
 
         <li>
           <span
-            className="caret"
+            className="caret caret-down"
             id="devices"
             onClick={() => {
               showCat('devices');
@@ -83,10 +83,10 @@ export class SystemData extends React.Component {
           >
             Devices
           </span>
-          <ul className="nested">
+          <ul className="nested active">
             <li>
               <span
-                className="caret"
+                className="caret caret-down"
                 id="micro"
                 onClick={() => {
                   showCat('micro');
@@ -94,13 +94,13 @@ export class SystemData extends React.Component {
               >
                 Microphones
               </span>
-              <ul className="nested">
+              <ul className="nested active">
                 {this.listdevices(data.system.devices.microphones.labels)}
               </ul>
             </li>
             <li>
               <span
-                className="caret"
+                className="caret caret-down"
                 id="speakers"
                 onClick={() => {
                   showCat('speakers');
@@ -108,7 +108,7 @@ export class SystemData extends React.Component {
               >
                 Speakers
               </span>
-              <ul className="nested">
+              <ul className="nested active">
                 {this.listdevices(data.system.devices.speakers.labels)}
               </ul>
             </li>
@@ -117,7 +117,7 @@ export class SystemData extends React.Component {
 
         <li>
           <span
-            className="caret"
+            className="caret caret-down"
             id="webrtc"
             onClick={() => {
               showCat('webrtc');
@@ -125,7 +125,7 @@ export class SystemData extends React.Component {
           >
             Webrtc
           </span>
-          <ul className="nested">{showObject(data.system.webrtc)}</ul>
+          <ul className="nested active">{showObject(data.system.webrtc)}</ul>
         </li>
       </ul>
     );

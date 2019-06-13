@@ -6,6 +6,8 @@ import { Filters } from './Filters';
 import { Interpret } from './Interpret';
 import { TimeLine } from './TimeLine';
 import { Events } from './Events';
+import { Button } from 'semantic-ui-react'
+
 export class Uploader extends React.Component {
   constructor(props) {
     super(props);
@@ -45,23 +47,23 @@ export class Uploader extends React.Component {
               this.loadJson(e.target.result);
             };
             reader.readAsText(e.target.files[0]);
+            this.changePanel();
           }
-          this.changePanel();
         }} />
       </div>
       <div className="screen panel" id="interpret">
         <h1>
           Logs analyzer{' '}
-          <button onClick={() => {
+          <Button primary onClick={() => {
             document.getElementById('home').classList.toggle('active');
             document.getElementById('interpret').classList.toggle('active');
           }}>
             Change log file
-            </button>
+            </Button>
         </h1>
-        <Interpret value={this.state.logs} filter={this.state.filter} time={this.state.timeline} />
+        <Interpret value={this.state.logs} filter={this.state.filter} time={this.state.timeline} handler={this.handler}/>
         <div className="right">
-          <Filters handler={this.handler} />
+          <Filters handler={this.handler} filter={this.state.filter} time={this.state.timeline}/>
           <SystemData value={this.state.logs} />
         </div>
         <TimeLine value={isJson(this.state.logs) ? this.state.logs : null} handler={this.handler} />

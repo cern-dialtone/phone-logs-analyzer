@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertJson } from '../functions/showCat';
+import { convertJson, indexOfArray } from '../functions/showCat';
 import { timedata } from '../index';
 export class TimeLine extends React.Component {
   constructor(props) {
@@ -13,10 +13,14 @@ export class TimeLine extends React.Component {
   getTimeline(x, timedata) {
     if (!timedata)
       return;
+      let timeformated = Object.keys(timedata)[Math.round((x.clientX * (Object.keys(timedata).length - 1)) / window.innerWidth)];
     this.props.handler({
-      timeline: Object.keys(timedata)[Math.round((x.clientX * (Object.keys(timedata).length - 1)) / window.innerWidth)]
+      timeline: timeformated
     });
     document.getElementById('cursor').style.left = x.clientX + 'px';
+    document.getElementById('time').innerHTML="+"+((timeformated-Object.keys(timedata)[0])/1000)+"s";
+    document.getElementById('time').style.left = x.clientX + 'px';
+    document.getElementById('resetfilters').style.backgroundColor='rgba(0,0,0,0.2)';
   }
   componentDidUpdate() {
     if (!this.props.value)
@@ -66,9 +70,7 @@ export class TimeLine extends React.Component {
       canv.stroke();
     }
     for (let i = 0; logs[i] && logs[i][0]; i++) {
-      if (logs[i][0].indexOf('Error') > -1 ||
-        logs[i][0].indexOf('Warning') > -1 ||
-        logs[i][0].indexOf('Fail') > -1) {
+      if (indexOfArray(logs[i][0], ['Error', 'Warning', 'Fail'])) {
         canv.beginPath();
         canv.moveTo((i * window.innerWidth) / logs.length, 0);
         canv.lineTo((i * window.innerWidth) / logs.length, canv.height);
@@ -81,6 +83,7 @@ export class TimeLine extends React.Component {
     if (this.props.value)
       return (<div className="timeline" id="timeline" onMouseMove={e => this.getTimeline(e, timedata)}>
         <div id="cursor" />
+        <div id="time">+1s</div>
         <canvas width={window.innerWidth - 20} height={(10 * window.innerHeight) / 100 - 20} className="canvas" id="canvas" />
       </div>);
     else
