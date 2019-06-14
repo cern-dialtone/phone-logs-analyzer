@@ -14,7 +14,8 @@ export class Uploader extends React.Component {
     this.state = {
       logs: null,
       filter: null,
-      timeline: null
+      timeline: null,
+      sortby: null
     };
     this.handler = this.handler.bind(this);
   }

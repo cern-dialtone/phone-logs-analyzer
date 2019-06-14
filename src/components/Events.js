@@ -1,5 +1,6 @@
 import React from 'react';
 import { convertJson, parselog } from '../functions/showCat';
+import { getInfos, getTime } from '../functions/parse_log';
 export class Events extends React.Component {
   constructor(props) {
     super(props);
@@ -16,7 +17,7 @@ export class Events extends React.Component {
     let tree = [];
     for (let i = 0; Object.keys(data)[i]; i++)
       tree.push(<div key={i} className="event">
-        {parselog(data[Object.keys(data)[i]][0])}
+        {getInfos(data[i])} <span style={{ float: 'right' }}>{getTime(data[i], data[0], i*6)}</span>
       </div>);
     return tree;
   }

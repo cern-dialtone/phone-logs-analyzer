@@ -89,14 +89,13 @@ canvas.canvas {
   padding: 10px;
   bottom: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .modal {
   position: fixed;
-  left: -20vw;
+  left: -30vw;
   top: 0px;
-  width: 20%;
+  width: 30vw;
   height: 100vh;
   background-color: rgb(245, 245, 245);
   transition: 0.5s;
@@ -105,8 +104,7 @@ canvas.canvas {
 
 .modal .openclose {
   top: 50vh;
-  left: 0vw;
-  position: fixed;
+  position: absolute;
   font-size: 40px;
   transition: 0.5s;
   border-radius: 50%;
@@ -114,10 +112,10 @@ canvas.canvas {
   background-color: rgb(168, 168, 168);
   color: white;
   cursor: pointer;
+  right: -50px;
 }
 
 .openclose.open {
-  left: 20vw;
   transform: rotate(180deg);
 }
 
@@ -187,4 +185,8 @@ div.infosless {
   padding: 5px;
   position: absolute;
   top: 0px;
+}
+
+.sorted::after {
+  content: ' Sorted';
 }
