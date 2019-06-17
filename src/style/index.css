@@ -190,3 +190,16 @@ div.infosless {
 .sorted::after {
   content: ' Sorted';
 }
+
+#startDate, #endDate {
+  position: absolute;
+  bottom: 10px;
+}
+
+#startDate {
+  left: 0;
+}
+
+#endDate {
+  right: 0;
+}

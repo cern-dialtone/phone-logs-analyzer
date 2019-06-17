@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertJson, parselog } from '../functions/showCat';
+import { convertJson } from '../functions/showCat';
 import { getInfos, getTime } from '../functions/parse_log';
 export class Events extends React.Component {
   constructor(props) {

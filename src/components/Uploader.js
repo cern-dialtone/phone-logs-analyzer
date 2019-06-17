@@ -24,10 +24,9 @@ export class Uploader extends React.Component {
   }
   loadJson(e) {
     this.setState({ logs: e });
-    this.changePanel();
   }
-  changePanel() {
-    if (isJson(this.state.logs)) {
+  changePanel(e) {
+    if (isJson(e)) {
       document.getElementById('interpret').classList.toggle('active');
       document.getElementById('home').classList.toggle('active');
     }
@@ -36,21 +35,7 @@ export class Uploader extends React.Component {
     return (<div>
       <div className="screen" id="home">
         <h1 className="title">Logs analyzer</h1>
-        <UploadForm onChange={e => {
-          if (document.getElementById('paste').value) {
-            this.setState({ logs: document.getElementById('paste').value });
-            this.changePanel();
-            return;
-          }
-          else if (e.target.files && e.target.files[0]) {
-            let reader = new FileReader();
-            reader.onloadend = e => {
-              this.loadJson(e.target.result);
-            };
-            reader.readAsText(e.target.files[0]);
-            this.changePanel();
-          }
-        }} />
+        <UploadForm handler={this.handler} onChange={(e) => this.changePanel(e)} />
       </div>
       <div className="screen panel" id="interpret">
         <h1>

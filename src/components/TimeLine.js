@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertJson, indexOfArray } from '../functions/showCat';
+import { convertJson } from '../functions/showCat';
 import { Chart } from 'chart.js'
 
 export class TimeLine extends React.Component {
@@ -9,20 +9,22 @@ export class TimeLine extends React.Component {
       logs: this.props.value,
       max: 0,
       min: 9999999,
-      loaded: false
+      loaded: false,
+      date_list: null,
     };
   }
+
   getTimeline(x, date_list) {
     if (!date_list)
       return;
-      let timeformated = Object.keys(date_list)[Math.round((x.clientX * (Object.keys(date_list).length - 1)) / window.innerWidth)];
-      console.log("timeformated", timeformated);
+    let timeformated = Object.keys(date_list)[Math.round(x * (Object.keys(date_list).length-1) / window.innerWidth)];
+    timeformated = new Date(timeformated).getTime();
     this.props.handler({
       timeline: timeformated
     });
-    document.getElementById('cursor').style.left = x.clientX + 'px';
-    document.getElementById('time').innerHTML="+"+((timeformated-Object.keys(date_list)[0])/1000)+"s";
-    document.getElementById('time').style.left = x.clientX + 'px';
+    document.getElementById('cursor').style.left = x + 'px';
+    document.getElementById('time').innerHTML="+"+((timeformated-(new Date(Object.keys(date_list)[0]).getTime()))/1000)+"s";
+    document.getElementById('time').style.left = x + 'px';
     document.getElementById('resetfilters').style.backgroundColor='rgba(0,0,0,0.2)';
   }
 
@@ -38,24 +40,31 @@ export class TimeLine extends React.Component {
     let logs = convertJson(this.props.value);
     let canvas = document.getElementById('canvas');
     let canv = canvas.getContext('2d');
+    canv.clearRect(0,0,9000,9000);
     canv.width = document.getElementById('canvas').width;
     canv.height = document.getElementById('canvas').height - 10;
     let date = null;
     let date_list = [];
+    let labels = [];
     for (let i = 0; Object.keys(logs)[i]; i++) {
       date = logs[i][logs[i].length - 1];
       if (date && date_list[date] >= 1)
         date_list[date]++;
-      else if (date && !date_list[date])
+      else if (date && !date_list[date]) {
         date_list[date] = 1;
+        labels.push("");
+      }
     }
+    document.getElementById('startDate').innerHTML=Object.keys(date_list)[0];
+    document.getElementById('endDate').innerHTML=Object.keys(date_list)[Object.keys(date_list).length-1];
+    this.setState({date_list: date_list});
     let data = [];
     for (let i = 0; date_list[Object.keys(date_list)[i]]; i++)
       data[i] = date_list[Object.keys(date_list)[i]];
-    var myChart = new Chart(canv, {
+    new Chart(canv, {
         type: 'line',
         data: {
-            labels: Object.keys(date_list),
+            labels: labels,
             datasets: [{
                 label: 'Number of events',
                 data: data,
@@ -63,6 +72,19 @@ export class TimeLine extends React.Component {
             }]
         },
         options: {
+          tooltips: {
+            callbacks: {
+               label: function(tooltipItem) {
+                      return tooltipItem.yLabel;
+               }
+            }
+          },
+          legend: {
+            labels: {
+              fontSize: 0
+            },
+            display: false
+          },
             scales: {
                 yAxes: [{
                     ticks: {
@@ -73,12 +95,16 @@ export class TimeLine extends React.Component {
         }
     });
   }
+
   render() {
     if (this.props.value)
-      return (<div className="timeline" id="timeline" onMouseMove={e => this.getTimeline(e, this.props.value)}>
+      return (<div className="timeline" id="timeline" onMouseMove={e => this.getTimeline(e.clientX, this.state.date_list)}>
         <div id="cursor" />
         <div id="time">+0s</div>
         <canvas width={window.innerWidth - 20} height={(20 * window.innerHeight) / 100 - 20} className="canvas" id="canvas" />
+      
+        <div id="startDate"></div>
+        <div id="endDate"></div>
       </div>);
     else
       return <div />;
