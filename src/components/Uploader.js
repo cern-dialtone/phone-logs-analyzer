@@ -9,11 +9,7 @@ import { Events } from './Events';
 import { Button } from 'semantic-ui-react'
 import "semantic-ui-css/semantic.min.css";
 
-export class Uploader extends React.Component {
-  /**
-   * Parent of all components (App equivalent)
-   * @param {*} props 
-   */
+export class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
