@@ -203,11 +203,3 @@ div.infosless {
 #endDate {
   right: 0;
 }
-
-tr td span.date {
-  display: none;
-}
-
-tr:hover td span.date {
-  display: block;
-}

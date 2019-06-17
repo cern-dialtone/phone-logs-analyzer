@@ -19,6 +19,18 @@ export class Interpret extends React.Component {
     this.state = { treemode: true, sortby: null };
   }
 
+  countObjects(obj) {
+    let counter = 0;
+    for (let a = 0; obj[Object.keys(obj)[a]]; a++)
+    {
+      if (typeof obj[Object.keys(obj)[a]] == "string")
+        counter += obj[Object.keys(obj)[a]].length;
+      else if (typeof obj[Object.keys(obj)[a]] == "object")
+        counter += this.countObjects(obj[Object.keys(obj)[a]]);
+    }
+    return (counter);
+  }
+
   findtreetomake(txt, id) {
     /**
      * See if there is Objects to show in informations
@@ -27,13 +39,14 @@ export class Interpret extends React.Component {
      * @param {any} id - showless/showmore identifier
      */
     for (let i = 0; txt[i]; i++)
-      if (typeof txt[i] == "object")
+      if (typeof txt[i] == "object" && this.countObjects(txt[i]) >= 50) {
         return <div key={(id/i)}><span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => {
           document.getElementById(id+"_"+i+"_tree").classList.toggle('showless');
           document.getElementById(id+"_"+i+"_tree").classList.toggle('infosless');
           document.getElementById(id+"_"+i+"show_more_link").innerHTML=document.getElementById(id+"_"+i+"show_more_link").innerHTML === "Show less" ? "Show more" : "Show less";
         }} id={id+"_"+i+"show_more_link"} key={id+"_"+i+"show_more_link"}>Show more</span>
         <div id={id+"_"+i+"_tree"} key={id+"_"+i+"_tree"} className="infosless">{showObject(txt[i])}</div></div>;
+      }
     return;
   }
   maketree(obj, filters, time) {

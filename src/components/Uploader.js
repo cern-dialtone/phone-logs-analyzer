@@ -53,7 +53,7 @@ export class App extends React.Component {
           <Filters handler={this.handler} filter={this.state.filter} time={this.state.timeline}/>
           <SystemData value={this.state.logs} />
         </div>
-        <TimeLine value={isJson(this.state.logs) ? this.state.logs : null} handler={this.handler} />
+        <TimeLine value={isJson(this.state.logs) ? this.state.logs : null} handler={this.handler} filter={this.state.filter}/>
         <Events value={this.state.logs} />
       </div>
     </div>);

@@ -1,3 +1,5 @@
+import React from 'react';
+
 export function getType(txt) {
   /**
    * Find the type of event
@@ -29,7 +31,7 @@ export function getType(txt) {
     if (!txt || !txt[0])
       return;
     let data = null;
-      if (txt[0].indexOf('|') > -1)
+    if (txt[0].indexOf('|') > -1)
       data = txt[0].split('|')[2];
     else if (txt[0].indexOf('APP:') > -1)
       data = txt[0].split('%c')[2];
@@ -41,6 +43,18 @@ export function getType(txt) {
       data = txt[0].substr(txt[0].lastIndexOf(':')+1, txt[0].lastIndexOf(':').length);
     else if (typeof txt[0] == "string")
       data = txt[0];
+
+    if (data.length > 100) {
+      let id = Math.round(Math.random() * 10000);
+      return (<React.Fragment>
+      {data.substr(0, 100)}<br/>
+      <span  key={id+"showmoreless"} style={{ color: 'blue', cursor: 'pointer' }} onClick={() => {
+          document.getElementById(id+"rest_infos").classList.toggle('showless');
+          document.getElementById(id+"rest_infos").classList.toggle('infosless');
+          document.getElementById(id+"_showmoreless").innerHTML=document.getElementById(id+"_showmoreless").innerHTML === "Show less" ? "Show more" : "Show less";
+        }} id={id+"_showmoreless"}>Show more</span><div id={id+"rest_infos"} key={id+"rest_infos"} className="infosless">{data.substr(100,data.length-100)}</div>
+      </React.Fragment>);
+    }
     return data;
   }
   export function getTime(txt, start) {

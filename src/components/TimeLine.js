@@ -1,5 +1,5 @@
 import React from 'react';
-import { convertJson } from '../functions/showCat';
+import { convertJson, indexOfArray } from '../functions/showCat';
 import { Chart } from 'chart.js'
 
 export class TimeLine extends React.Component {
@@ -12,6 +12,7 @@ export class TimeLine extends React.Component {
     super(props);
     this.state = {
       logs: this.props.value,
+      filter: this.props.filter,
       max: 0,
       min: Infinity,
       loaded: false,
@@ -41,7 +42,7 @@ export class TimeLine extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.value !== nextProps.value) // there's no need to update if logs don't change
+    if (this.props.value !== nextProps.value || this.props.filter !== nextProps.filter) // there's no need to update if logs/filters don't change
       return (true);
     return (false);
   }
@@ -58,15 +59,20 @@ export class TimeLine extends React.Component {
     let date = null;
     let date_list = [];
     let labels = [];
+    let count = 0;
     for (let i = 0; Object.keys(logs)[i]; i++) {    // counting number of events by date
       date = logs[i][logs[i].length - 1];
-      if (date && date_list[date] >= 1)
+      if (date && date_list[date] >= 1 && (!this.props.filter || (logs[Object.keys(logs)[i]][0] && indexOfArray(logs[Object.keys(logs)[i]][0], this.props.filter)))) {
         date_list[date]++;
-      else if (date && !date_list[date]) {
+        count++;
+      }
+      else if (date && !date_list[date] && (!this.props.filter || (logs[Object.keys(logs)[i]][0] && indexOfArray(logs[Object.keys(logs)[i]][0], this.props.filter)))) {
         date_list[date] = 1;
+        count++;
         labels.push("");   // add a blank value at labels array because there is no "hide labels" parameter in chartJs yet.
       }
     }
+    console.log(count);
     document.getElementById('startDate').innerHTML=Object.keys(date_list)[0];
     document.getElementById('endDate').innerHTML=Object.keys(date_list)[Object.keys(date_list).length-1];
     this.setState({date_list: date_list});
@@ -114,7 +120,6 @@ export class TimeLine extends React.Component {
         <div id="cursor" />
         <div id="time">+0s</div>
         <canvas width={window.innerWidth - 20} height={(20 * window.innerHeight) / 100 - 20} className="canvas" id="canvas" />
-      
         <div id="startDate"></div>
         <div id="endDate"></div>
       </div>);
