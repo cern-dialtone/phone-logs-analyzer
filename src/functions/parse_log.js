@@ -1,4 +1,9 @@
 export function getType(txt) {
+  /**
+   * Find the type of event
+   * 
+   * @param {object} txt - event object 
+   */
     if (!txt || !txt[0])
       return;
     let data = null;
@@ -16,7 +21,11 @@ export function getType(txt) {
       data = txt[0];
     return data;
   }
-  export function getInfos(txt, id) {
+  export function getInfos(txt) {
+    /**
+     * 
+     * @param {object} txt - event object
+     */
     if (!txt || !txt[0])
       return;
     let data = null;
@@ -34,7 +43,15 @@ export function getType(txt) {
       data = txt[0];
     return data;
   }
-  export function getTime(txt, start, id) {
+  export function getTime(txt, start) {
+    /**
+     * Give relative time according to start
+     * 
+     * @param {object} txt - event object
+     * @param {date} start - POSIX format date of first event
+     * 
+     * @return {string} - ex: +5s
+     */
     if (!txt || !txt[0] || !start)
       return;
     let current_time = parseInt(Date.parse(txt[txt.length-1]));
@@ -42,6 +59,9 @@ export function getType(txt) {
     return "+"+(current_time-start_time)/1000+"s";
   }
   export function getColor(txt) {
+    /**
+     * Will get first color if there's one in event object txt and add opacity (too bright to be read otherwise)
+     */
     let r, g, b;
     for (let i = 0; txt[i]; i++)
       if (typeof txt[i] == "string" && txt[i].indexOf('color') > -1) {

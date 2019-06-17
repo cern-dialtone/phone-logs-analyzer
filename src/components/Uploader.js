@@ -7,15 +7,20 @@ import { Interpret } from './Interpret';
 import { TimeLine } from './TimeLine';
 import { Events } from './Events';
 import { Button } from 'semantic-ui-react'
+import "semantic-ui-css/semantic.min.css";
 
 export class Uploader extends React.Component {
+  /**
+   * Parent of all components (App equivalent)
+   * @param {*} props 
+   */
   constructor(props) {
     super(props);
     this.state = {
       logs: null,
-      filter: null,
-      timeline: null,
-      sortby: null
+      filter: null, // filter: {Array} containing words to find
+      timeline: null, // POSIX TIME ONLY
+      sortby: null // only one value available : 'time'
     };
     this.handler = this.handler.bind(this);
   }

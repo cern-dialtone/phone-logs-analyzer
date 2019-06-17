@@ -9,6 +9,13 @@ export function showCat(id) {
   document.getElementById(id).classList.toggle('caret-down');
 }
 export function convertJson(json) {
+  /**
+   * Convert JSON if it's a valid value
+   * 
+   * @param {string} json - log raw
+   * 
+   * @return {object || boolean} - Will return converted json or false if it fail. 
+   */
   if (isJson(json)) return JSON.parse(json);
   return false;
 }

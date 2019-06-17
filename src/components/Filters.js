@@ -1,6 +1,12 @@
 import React from 'react';
 import { Input, Menu } from 'semantic-ui-react';
 export class Filters extends React.Component {
+
+  /**
+   * This part will only use an handler sent by props. (this.props.handler({obj}))
+   * 
+   * @param {*} props 
+   */
   constructor(props) {
     super(props);
     this.state = {};

@@ -2,6 +2,13 @@ import React from 'react';
 import { stringify } from 'querystring';
 
 export function showObject(obj) {
+  /**
+   * Recursive function to fully display event details
+   * 
+   * @param {object} obj - event child object containing unknown type of data
+   * 
+   * @return {array} list - List of all data detected
+   */
   if (typeof obj !== 'object' || !obj)
     return (
       <span key="_" className="false">

@@ -3,22 +3,34 @@ import { convertJson } from '../functions/showCat';
 import { Chart } from 'chart.js'
 
 export class TimeLine extends React.Component {
+  /**
+   * Handle TimeLine and time filter
+   * 
+   * @param {*} props 
+   */
   constructor(props) {
     super(props);
     this.state = {
       logs: this.props.value,
       max: 0,
-      min: 9999999,
+      min: Infinity,
       loaded: false,
       date_list: null,
     };
   }
 
   getTimeline(x, date_list) {
+    /**
+     * Find proportionnal equivalent between date and cursor position
+     * 
+     * @param {int} x - event.clientX
+     * @param {Array} date_list - date_list is formated :
+     *                                                      date_list['| Fri, 31 May 2019 12:48:42 GMT'] = 52; // 52 is the number of events at this date
+     */
     if (!date_list)
       return;
     let timeformated = Object.keys(date_list)[Math.round(x * (Object.keys(date_list).length-1) / window.innerWidth)];
-    timeformated = new Date(timeformated).getTime();
+    timeformated = new Date(timeformated).getTime(); // we need to get POSIX format date
     this.props.handler({
       timeline: timeformated
     });
@@ -29,7 +41,7 @@ export class TimeLine extends React.Component {
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.value !== nextProps.value)
+    if (this.props.value !== nextProps.value) // there's no need to update if logs don't change
       return (true);
     return (false);
   }
@@ -46,13 +58,13 @@ export class TimeLine extends React.Component {
     let date = null;
     let date_list = [];
     let labels = [];
-    for (let i = 0; Object.keys(logs)[i]; i++) {
+    for (let i = 0; Object.keys(logs)[i]; i++) {    // counting number of events by date
       date = logs[i][logs[i].length - 1];
       if (date && date_list[date] >= 1)
         date_list[date]++;
       else if (date && !date_list[date]) {
         date_list[date] = 1;
-        labels.push("");
+        labels.push("");   // add a blank value at labels array because there is no "hide labels" parameter in chartJs yet.
       }
     }
     document.getElementById('startDate').innerHTML=Object.keys(date_list)[0];

@@ -3,6 +3,11 @@ import { convertJson, showCat } from '../functions/showCat';
 import { showObject } from '../functions/showObject';
 
 export class SystemData extends React.Component {
+  /**
+   * Handle system details display
+   * 
+   * @param {*} props 
+   */
   constructor(props) {
     super(props);
     this.state = { showinginfos: false };

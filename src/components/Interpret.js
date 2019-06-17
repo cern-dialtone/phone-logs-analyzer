@@ -5,12 +5,27 @@ import { showObject } from '../functions/showObject';
 import { getType, getInfos, getColor, getTime } from '../functions/parse_log'
 
 export class Interpret extends React.Component {
+  /**
+   * Will interpret logs and apply filters (search terms, time)
+   * 
+   * It will need : this.props.time   (POSIX format date OR null) 
+   *                          .value  (Json logs raw OR null)
+   *                          .filter (words array OR null)
+   * 
+   * @param {*} props 
+   */
   constructor(props) {
     super(props);
     this.state = { treemode: true, sortby: null };
   }
 
   findtreetomake(txt, id) {
+    /**
+     * See if there is Objects to show in informations
+     * 
+     * @param {any} txt - Complete event object
+     * @param {any} id - showless/showmore identifier
+     */
     for (let i = 0; txt[i]; i++)
       if (typeof txt[i] == "object")
         return <div key={(id/i)}><span style={{ color: 'blue', cursor: 'pointer' }} onClick={() => {
@@ -22,17 +37,28 @@ export class Interpret extends React.Component {
     return;
   }
   maketree(obj, filters, time) {
+    /**
+     * This part list every event received in obj.
+     * It handle filters (words, time)
+     * 
+     * @param {Object} obj - JSON formated logs
+     * @param {Array} filters - Array of words to find in event description
+     * @param {Date} time - POSIX format date (filter) (provided by timeline)
+     * 
+     * @return {Array} table - Array containing every events 
+     */
     if (!obj)
       return;
     let minusdate = null;
     let log_counter = 0;
+    // Get log beginning date because you have to give it to getTime() to make relative time (ex: +2s).
     for (let i = 0; obj[Object.keys(obj)[i]]; i++)
       minusdate = (!minusdate || obj[Object.keys(obj)[i]][obj[Object.keys(obj)[i]].length-1] < minusdate) ? obj[Object.keys(obj)[i]][obj[Object.keys(obj)[i]].length-1] : minusdate;
     let table = [];
     let list = Object.keys(obj);
     for (let i = 0; list[i]; i++) {
-      if (((filters && obj[list[i]][0] && indexOfArray(obj[list[i]][0], filters)) || !filters)
-      && ((time && parseInt(Date.parse(obj[list[i]][obj[list[i]].length - 1])) === parseInt(time)) || !time)) {
+      if (((filters && obj[list[i]][0] && indexOfArray(obj[list[i]][0], filters)) || !filters) // handler filter
+      && ((time && parseInt(Date.parse(obj[list[i]][obj[list[i]].length - 1])) === parseInt(time)) || !time)) { // handle time
         log_counter++;
         table.push(<Table.Row style={{ backgroundColor: getColor(obj[list[i]]) }} key={i+"_tablerow"}>
           <Table.Cell style={{ width: 'min-content' }}>{getType(obj[list[i]])}</Table.Cell>
@@ -46,6 +72,11 @@ export class Interpret extends React.Component {
   }
 
   sorted(data) {
+    /**
+     * Sorting double array (basic Json logs)
+     * 
+     * @return {boolean}
+     */
     let i = 0;
     while (data[i+1])
     {
@@ -57,8 +88,16 @@ export class Interpret extends React.Component {
   }
 
   displaylogs() {
+    /**
+     * Handle logs display
+     * Handle Time sorting
+     * 
+     * need : this.props.value  (Raw log)
+     *                  .filter (Array of words to find)
+     *                  .time   (POSIX format date to find)
+     */
     let data = convertJson(this.props.value);
-    if (!this.sorted(data))
+    if (!this.sorted(data)) // Making sure data is sorted, otherwise we sort it by time
     {
       let count = 0;
       let i = 0;
@@ -84,9 +123,9 @@ export class Interpret extends React.Component {
       data.reverse();
     return this.state.treemode ? <Table style={{ tableLayout: 'fixed' }} className="details">
       <Table.Header><Table.Row>
-        <Table.HeaderCell id="type">Type (<span id='events_nbr'></span> events)</Table.HeaderCell>
+        <Table.HeaderCell id="type">Type (<span id='events_nbr'>0</span> events)</Table.HeaderCell>
         <Table.HeaderCell id="infos">Infos</Table.HeaderCell>
-        <Table.HeaderCell id="time_cat" onClick={() => {
+        <Table.HeaderCell id="time_cat" style={{ cursor: 'pointer' }} onClick={() => {
           document.getElementById('time_cat').classList.toggle("sorted");
           this.setState({sortby: (!this.state.sortby ? 'time' : null)});
         }}>Time</Table.HeaderCell></Table.Row></Table.Header><Table.Body>
