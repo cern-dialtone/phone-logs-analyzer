@@ -1,5 +1,6 @@
 import React from 'react';
 import { showObject } from './showObject';
+import { isArray } from 'util';
 
 export function showCat(id) {
   document
@@ -29,11 +30,13 @@ export function isJson(txt) {
   return txt && data[data.length-1] && data[data.length-1].system ? true : false;
 }
 export function indexOfArray(txt, values) {
-  for (let a = 0; values[a]; a++)
+  for (let a = 0; txt && values && values[a]; a++)
     if (txt.toUpperCase().indexOf(values[a].toUpperCase()) > -1) return true;
   return false;
 }
 export function ShowDetails(props) {
+  if (!props || !props.value || !Array.isArray(props.value))
+    return;
   let obj = props.value;
   let list = [];
   for (let a = 0; Object.keys(obj)[a]; a++)

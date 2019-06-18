@@ -26,7 +26,7 @@ export class SystemData extends React.Component {
     )
       return <h3>No valid data detected.</h3>;
     data = data[data.length - 1];
-    if (!data || !data.system) return <h3>Required informations not found</h3>;
+    if (!data || !data.system || !data.system.browser) return <h3>Required informations not found</h3>;
     return (
       <ul id="Tree">
         <li>

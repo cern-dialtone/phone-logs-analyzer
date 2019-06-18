@@ -66,7 +66,7 @@ export function getType(txt) {
      * 
      * @return {string} - ex: +5s
      */
-    if (!txt || !txt[0] || !start)
+    if (!txt || !txt[0] || !start || !start[0])
       return;
     let current_time = parseInt(Date.parse(txt[txt.length-1]));
     let start_time = parseInt(Date.parse(start[start.length-1]));

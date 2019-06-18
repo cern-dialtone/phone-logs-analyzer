@@ -145,6 +145,8 @@ export class Interpret extends React.Component {
     {this.maketree(data, this.props.filter, this.props.time)}</Table.Body></Table> : <pre>{this.props.value}</pre>;
   }
   treemodeavailable() {
+    if (!document.getElementById('treemode') || !document.getElementById('treemodetoggle'))
+      return;
     if (!isJson(this.props.value)) {
       document.getElementById('treemode').style.opacity = '0.5';
       document.getElementById('treemodetoggle').setAttribute('disabled', '');

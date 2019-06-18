@@ -5,7 +5,7 @@ export const UploadForm = props => {
     <Form className="upload" id="file">
       <input type="file" id="file-input" onChange={(e) => {
         /**
-         * This part will read the file and fill the parent 'logs' state with by handler
+         * This part will read the file and fill the parent 'logs' state by handler
          * then it will tell onChange to change or not (if the file is correct) the panel (passing from UploadForm to Interpret)
          */
     if (e.target.files && e.target.files[0]) {
