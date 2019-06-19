@@ -3,7 +3,7 @@ stages:
  - test
  - build
  - generate_docker_image
-#- redeploy
+ - redeploy
 
 # to cache both npm modules and Cypress binary we use environment variables
 # to point at the folders we can list as paths in "cache" job settings
@@ -136,20 +136,19 @@ generate_docker_image_test:
     TO: $CI_REGISTRY_IMAGE/test # Where to push resulting image
 
 
-##redeploy_next:
-##  stage: redeploy
-##  image: gitlab-registry.cern.ch/paas-tools/openshift-client:latest
-##  environment:
-##    name: next
-##  variables:
-##    GITLAB_NAMESPACE: dialtone
-##    OPENSHIFT_SERVER: https://openshift.cern.ch # use https://openshift-dev.cern.ch for a Test site
-##    OPENSHIFT_NAMESPACE: phone-next # this is the name of your Openshift project (i.e. the site name)
-##    OPENSHIFT_APP_NAME: dial-webapp # this is the name of the ImageStream/DeploymentConfig objects created by oc new-app. Typically, this will be the name of the GitLab project.
-##  script:
-##  - "oc import-image $OPENSHIFT_APP_NAME --all --server=$OPENSHIFT_SERVER --namespace=$OPENSHIFT_NAMESPACE --from=gitlab-registry.cern.ch/$GITLAB_NAMESPACE/$OPENSHIFT_APP_NAME/next --confirm --token=$IMAGE_IMPORT_TOKEN_NEXT"
-##  # wait a bit for redeployment to happen then monitor the deployment status
-##  - "sleep 30s && oc rollout status dc/$OPENSHIFT_APP_NAME --server=$OPENSHIFT_SERVER --namespace $OPENSHIFT_NAMESPACE --token=$IMAGE_IMPORT_TOKEN_NEXT"
-##  only:
-##  - next # production or next, the branch you want to publish
-#
+redeploy_next:
+  stage: redeploy
+  image: gitlab-registry.cern.ch/paas-tools/openshift-client:latest
+  environment:
+    name: test
+  variables:
+    GITLAB_NAMESPACE: dialtone
+    OPENSHIFT_SERVER: https://openshift-dev.cern.ch # use https://openshift-dev.cern.ch for a Test site
+    OPENSHIFT_NAMESPACE: test-logs-analyzer # this is the name of your Openshift project (i.e. the site name)
+    OPENSHIFT_APP_NAME: webapp # this is the name of the ImageStream/DeploymentConfig objects created by oc new-app. Typically, this will be the name of the GitLab project.
+    IMAGE_TYPE: test
+  script:
+  - "oc import-image $OPENSHIFT_APP_NAME --all --server=$OPENSHIFT_SERVER --namespace=$OPENSHIFT_NAMESPACE --from=gitlab-registry.cern.ch/$GITLAB_NAMESPACE/$OPENSHIFT_APP_NAME/$IMAGE_TYPE --confirm --token=$DEPLOYMENT_TOKEN_TEST"
+  # wait a bit for redeployment to happen then monitor the deployment status
+  - "sleep 30s && oc rollout status dc/$OPENSHIFT_APP_NAME --server=$OPENSHIFT_SERVER --namespace $OPENSHIFT_NAMESPACE --token=$DEPLOYMENT_TOKEN_TEST"
+
