@@ -1,6 +1,6 @@
 stages:
 #- install
-- test
+#- test
 #- build
 #- generate_docker_image
 #- redeploy
