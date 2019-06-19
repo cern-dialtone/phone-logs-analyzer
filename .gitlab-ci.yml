@@ -1,6 +1,6 @@
-#stages:
+stages:
 #- install
-#- test
+ - test
 #- build
 #- generate_docker_image
 #- redeploy
@@ -59,9 +59,8 @@ unit_test_web:
   image: node:11.10
   stage: test
   before_script:
-    - yarn add npm
 #    - cd webapp
-    - npm install
+    - yarn install
   script:
 #  - npm run build
   - npm test -- --coverage
