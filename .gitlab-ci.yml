@@ -1,4 +1,4 @@
-stages:
+#stages:
 #- install
 #- test
 #- build
@@ -59,6 +59,7 @@ unit_test_web:
   image: node:11.10
   stage: test
   before_script:
+    - yarn add npm
 #    - cd webapp
     - npm install
   script:
