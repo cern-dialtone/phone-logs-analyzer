@@ -1,8 +1,8 @@
 stages:
 #- install
  - test
-- build
-#- generate_docker_image
+ - build
+ - generate_docker_image
 #- redeploy
 
 # to cache both npm modules and Cypress binary we use environment variables
