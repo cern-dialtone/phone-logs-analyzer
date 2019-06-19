@@ -24,14 +24,6 @@ it('SystemData handle bad props', () => {
 
 afterEach(cleanup);
 
-it('SystemData handle bad props', () => {
-    let wrong_system = null;
-    const ret = render(<SystemData value={wrong_system}/>).container;
-    expect(ret.getElementsByTagName('h3')[0].textContent).toBe("No valid data detected.");
-});
-
-afterEach(cleanup);
-
 it('SystemData is working', () => {
     let good_system = [{"some": "things"}, {
         "system":{
