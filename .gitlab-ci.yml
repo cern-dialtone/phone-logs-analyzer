@@ -1,7 +1,7 @@
 stages:
 #- install
  - test
-#- build
+- build
 #- generate_docker_image
 #- redeploy
 
@@ -24,12 +24,11 @@ stages:
 
 # cache using branch name
 # https://gitlab.com/help/ci/caching/index.md
-#cache:
-#  key: ${CI_COMMIT_REF_SLUG}
-#  paths:
-#  - webapp/.npm
-#  - webapp/cache/Cypress
-#  - webapp/node_modules
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+  - .npm
+  - node_modules
 
 # this job installs NPM dependencies and Cypress
 # The image is based on node:XX images
@@ -94,30 +93,17 @@ unit_test_web:
 #  only:
 #  - next # production or next, the branch you want to publish
 #
-#build_test_web:
-#  image: node:11.10
-#  stage: build
-#  variables:
-#    REACT_APP_API_ENDPOINT: ${API_ENDPOINT}
-#    REACT_APP_OAUTH_ENABLED: ${OAUTH_ENABLED}
-#    REACT_APP_OAUTH_CLIENT_ID: ${OAUTH_CLIENT_ID}
-#    REACT_APP_OAUTH_AUTHORIZATION_URL: ${OAUTH_AUTHORIZATION_URL}
-#    REACT_APP_OAUTH_REDIRECT_URL: ${OAUTH_REDIRECT_URL}
-#    REACT_APP_SENTRY_DSN: ${SENTRY_DSN_NEXT}
-#    REACT_APP_TONE_API_PATH: ${TONE_API_PATH}
-#    REACT_APP_PIWIK_URL: ${PIWIK_URL}
-#    REACT_APP_PIWIK_SITE_ID: ${PIWIK_SITE_ID}
-#  before_script:
-#  - cd webapp
-#  - npm install
-#  script:
-#  - npm run build
-#  artifacts:
-#    paths:
-#    - webapp/build # The application is built for production
-#  except:
-#  - next # Not in next branch
-#
+build_test_web:
+  image: node:11.10
+  stage: build
+  before_script:
+  - yarn install
+  script:
+  - npm run build
+  artifacts:
+    paths:
+    - build # The application is built for production
+
 ##
 ## GENERATING THE DOCKER IMAGES
 ##
@@ -135,22 +121,21 @@ unit_test_web:
 #    TO: $CI_REGISTRY_IMAGE/next # Where to push resulting image
 #  only:
 #  - next # production or next, the branch you want to publish
-#
-#generate_docker_image_test:
-#  stage: generate_docker_image
-#  tags:
-#  - docker-image-build
-#  script:
-#    - pwd
-#    - ls
-#    - "echo building $CI_REGISTRY_IMAGE/test" # No empty scripts are allowed
-#  dependencies:
-#  - build_test_web # we'll need the built artifact to build the image
-#  variables:
-#    TO: $CI_REGISTRY_IMAGE/test # Where to push resulting image
-#  except:
-#  - next # Not in next branch
-#
+
+generate_docker_image_test:
+  stage: generate_docker_image
+  tags:
+  - docker-image-build
+  script:
+    - pwd
+    - ls
+    - "echo building $CI_REGISTRY_IMAGE/test" # No empty scripts are allowed
+  dependencies:
+  - build_test_web # we'll need the built artifact to build the image
+  variables:
+    TO: $CI_REGISTRY_IMAGE/test # Where to push resulting image
+
+
 ##redeploy_next:
 ##  stage: redeploy
 ##  image: gitlab-registry.cern.ch/paas-tools/openshift-client:latest
