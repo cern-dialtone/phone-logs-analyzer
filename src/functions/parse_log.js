@@ -80,8 +80,10 @@ export function getType(txt) {
     for (let i = 0; txt[i]; i++)
       if (typeof txt[i] == "string" && txt[i].indexOf('color') > -1) {
         let color = txt[i].substr(txt[i].indexOf('#')+1, txt[i].indexOf('#').length);
+        if (color.length != 6)
+          return "transparent";
         r = parseInt("0x"+color.substr(0, 2));
-        g = parseInt("0x"+color.substr(3, 2));
+        g = parseInt("0x"+color.substr(2, 2));
         b = parseInt("0x"+color.substr(4, 2));
         color = "rgba("+r+", "+g+", "+b+", 0.3)";
         return color;
