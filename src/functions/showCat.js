@@ -1,6 +1,5 @@
 import React from 'react';
 import { showObject } from './showObject';
-import { isArray } from 'util';
 
 export function showCat(id) {
   document
