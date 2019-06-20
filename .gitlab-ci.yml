@@ -145,7 +145,7 @@ redeploy_next:
     GITLAB_NAMESPACE: dialtone
     OPENSHIFT_SERVER: https://openshift-dev.cern.ch # use https://openshift-dev.cern.ch for a Test site
     OPENSHIFT_NAMESPACE: test-logs-analyzer # this is the name of your Openshift project (i.e. the site name)
-    OPENSHIFT_APP_NAME: webapp # this is the name of the ImageStream/DeploymentConfig objects created by oc new-app. Typically, this will be the name of the GitLab project.
+    OPENSHIFT_APP_NAME: test-logs-analyzer # this is the name of the ImageStream/DeploymentConfig objects created by oc new-app. Typically, this will be the name of the GitLab project.
     IMAGE_TYPE: test
   script:
   - "oc import-image $OPENSHIFT_APP_NAME --all --server=$OPENSHIFT_SERVER --namespace=$OPENSHIFT_NAMESPACE --from=gitlab-registry.cern.ch/$GITLAB_NAMESPACE/$OPENSHIFT_APP_NAME/$IMAGE_TYPE --confirm --token=$DEPLOYMENT_TOKEN_TEST"
