@@ -44,7 +44,7 @@ export function getType(txt) {
     else if (typeof txt[0] == "string")
       data = txt[0];
 
-    if (data.length > 100) {
+    if (data && data.length > 100) {
       let id = Math.round(Math.random() * 10000);
       return (<React.Fragment>
       {data.substr(0, 100)}<br/>
