@@ -151,5 +151,5 @@ redeploy_next:
   script:
   - "oc import-image $OPENSHIFT_APP_NAME --all --server=$OPENSHIFT_SERVER --namespace=$OPENSHIFT_NAMESPACE --from=gitlab-registry.cern.ch/$GITLAB_NAMESPACE/$GITLAB_APP_NAME/$IMAGE_TYPE --confirm --token=$DEPLOYMENT_TOKEN_TEST"
   # wait a bit for redeployment to happen then monitor the deployment status
-  - "sleep 30s && oc rollout status dc/$OPENSHIFT_APP_NAME --server=$OPENSHIFT_SERVER --namespace GITLAB_APP_NAME --token=$DEPLOYMENT_TOKEN_TEST"
+  - "sleep 30s && oc rollout status dc/$OPENSHIFT_APP_NAME --server=$OPENSHIFT_SERVER --namespace $GITLAB_APP_NAME --token=$DEPLOYMENT_TOKEN_TEST"
 
