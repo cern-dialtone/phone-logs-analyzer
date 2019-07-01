@@ -5,6 +5,7 @@ html {
 body {
   margin: 0;
   padding: 0;
+  min-width: 525;
 }
 
 h1.title {
@@ -16,33 +17,6 @@ h1.title {
 form.upload {
   width: 50vw;
   margin: auto;
-}
-
-.displaylogs {
-  width: 60vw;
-  height: 60vh;
-  margin: auto;
-  overflow-y: auto;
-  display: inline-block;
-}
-
-.screen {
-  min-height: 100vh;
-}
-
-.right {
-  float: right;
-  width: 28vw;
-}
-
-.panel {
-  width: 90vw;
-  margin: auto;
-  padding-top: 1vh;
-}
-
-.panel h2 {
-  text-align: center;
 }
 
 .searchbar {
@@ -81,14 +55,6 @@ canvas.canvas {
   display: block;
   width: 100%;
   height: 100%;
-}
-
-.timeline {
-  width: 100%;
-  position: fixed;
-  padding: 10px;
-  bottom: 0;
-  left: 0;
 }
 
 .modal {
@@ -202,4 +168,91 @@ div.infosless {
 
 #endDate {
   right: 0;
+}
+
+@media only screen and (min-width: 1800px) {
+  .displaylogs {
+    width: 60vw;
+    height: 60vh;
+    margin: auto;
+    overflow-y: auto;
+    display: inline-block;
+  }
+
+  .screen {
+    min-height: 100vh;
+  }
+
+  .right {
+    float: right;
+    width: 28vw;
+  }
+
+  .panel {
+    width: 90vw;
+    margin: auto;
+    padding-top: 1vh;
+  }
+
+  .panel h2 {
+    text-align: center;
+  }
+
+  .timeline {
+    width: 100%;
+    position: fixed;
+    padding: 10px;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+
+@media only screen and (max-width: 1800px) {
+  .displaylogs {
+    height: 60vh;
+    margin: auto;
+    overflow-y: auto;
+    display: block;
+  }
+
+  .screen {
+    min-height: 100vh;
+  }
+
+  .right {
+    display: block;
+    margin-bottom: 20vh;
+  }
+
+  .panel {
+    width: 98vw;
+    margin: auto;
+    padding-top: 1vh;
+  }
+
+  .timeline {
+    background-color: white;
+    width: 100%;
+    position: fixed;
+    padding: 10px;
+    bottom: 0;
+    left: 0;
+  }
+
+  .filters {
+    text-align: center;
+  }
+
+  .bigtitle {
+    display: inline-block;
+  }
+
+  .treemode {
+    display: inline-block;
+  }
+
+  .openclose, .eventlist {
+    display: none;
+  }
 }

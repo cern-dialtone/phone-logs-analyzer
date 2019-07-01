@@ -39,7 +39,7 @@ export class App extends React.Component {
         <UploadForm handler={this.handler} onChange={(e) => this.changePanel(e)} />
       </div>
       <div className="screen panel" id="interpret">
-        <h1>
+        <h1 className="bigtitle">
           Logs analyzer{' '}
           <Button primary onClick={() => {
             document.getElementById('home').classList.toggle('active');

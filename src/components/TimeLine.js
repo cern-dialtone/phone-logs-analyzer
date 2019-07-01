@@ -119,7 +119,7 @@ export class TimeLine extends React.Component {
       return (<div className="timeline" id="timeline" onMouseMove={e => this.getTimeline(e.clientX, this.state.date_list)}>
         <div id="cursor" />
         <div id="time">+0s</div>
-        <canvas width={window.innerWidth - 20} height={(20 * window.innerHeight) / 100 - 20} className="canvas" id="canvas" />
+        <canvas width={window.innerWidth - 20} height={200} className="canvas" id="canvas" />
         <div id="startDate"></div>
         <div id="endDate"></div>
       </div>);

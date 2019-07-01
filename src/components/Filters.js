@@ -36,7 +36,7 @@ export class Filters extends React.Component {
   render() {
     return (
       <div>
-        <h2>Filters</h2>
+        <h2 className="filters">Filters</h2>
         <Input id='searchbar'
           focus
           placeholder="Search in logs"
