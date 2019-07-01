@@ -6,7 +6,7 @@ import { Filters } from './Filters';
 import { Interpret } from './Interpret';
 import { TimeLine } from './TimeLine';
 import { Events } from './Events';
-import { Button } from 'semantic-ui-react'
+import { Button, Grid, Segment } from 'semantic-ui-react'
 import "semantic-ui-css/semantic.min.css";
 
 export class App extends React.Component {
@@ -33,29 +33,46 @@ export class App extends React.Component {
     }
   }
   render() {
-    return (<div>
+    return (
+    <div>
       <div className="screen" id="home">
         <h1 className="title">Logs analyzer</h1>
         <UploadForm handler={this.handler} onChange={(e) => this.changePanel(e)} />
       </div>
       <div className="screen panel" id="interpret">
-        <h1 className="bigtitle">
-          Logs analyzer{' '}
-          <Button primary onClick={() => {
-            document.getElementById('home').classList.toggle('active');
-            document.getElementById('interpret').classList.toggle('active');
-          }}>
-            Change log file
-            </Button>
-        </h1>
-        <Interpret value={this.state.logs} filter={this.state.filter} time={this.state.timeline} handler={this.handler}/>
-        <div className="right">
-          <Filters handler={this.handler} filter={this.state.filter} time={this.state.timeline}/>
-          <SystemData value={this.state.logs} />
-        </div>
-        <TimeLine value={isJson(this.state.logs) ? this.state.logs : null} handler={this.handler} filter={this.state.filter}/>
-        <Events value={this.state.logs} />
+
+      <Grid stackable columns={1}>
+          <Grid.Column>
+            <Segment>
+              <h1 className="bigtitle">
+                Logs analyzer{' '}
+                <Button primary onClick={() => {
+                  document.getElementById('home').classList.toggle('active');
+                  document.getElementById('interpret').classList.toggle('active');
+                }}>
+                  Change log file
+                  </Button>
+              </h1>
+            </Segment>
+          </Grid.Column>
+        </Grid>
+
+        <Grid stackable doubling columns={2}>
+          <Grid.Column>
+            <Segment>
+              <Filters handler={this.handler} filter={this.state.filter} time={this.state.timeline}/>
+              <SystemData value={this.state.logs}/>
+            </Segment>
+          </Grid.Column>
+          <Grid.Column>
+            <Segment style={{ marginBottom: '20%' }}>
+              <Interpret value={this.state.logs} filter={this.state.filter} time={this.state.timeline} handler={this.handler}/>
+            </Segment>
+          </Grid.Column>
+        </Grid>
       </div>
+      <Events value={this.state.logs}/>
+      <TimeLine value={isJson(this.state.logs) ? this.state.logs : null} handler={this.handler} filter={this.state.filter}/>
     </div>);
   }
 }
