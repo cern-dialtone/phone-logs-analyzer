@@ -60,5 +60,5 @@ redeploy_next:
   script:
   - "oc import-image $OPENSHIFT_APP_NAME --all --server=$OPENSHIFT_SERVER --namespace=$OPENSHIFT_NAMESPACE --from=$GITLAB_SERVER/$GITLAB_NAMESPACE/$GITLAB_APP_NAME/$IMAGE_TYPE --confirm --token=$DEPLOYMENT_TOKEN_PROD"
   # wait a bit for redeployment to happen then monitor the deployment status
-  - "sleep 30s && oc rollout status dc/$DEPLOYMENT_CONF_NAME --server=$OPENSHIFT_SERVER --namespace $OPENSHIFT_NAMESPACE --token=$DEPLOYMENT_TOKEN_TEST"
+  - "sleep 30s && oc rollout status dc/$DEPLOYMENT_CONF_NAME --server=$OPENSHIFT_SERVER --namespace $OPENSHIFT_NAMESPACE --token=$DEPLOYMENT_TOKEN_PROD"
 
