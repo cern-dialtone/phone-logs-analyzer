@@ -43,7 +43,7 @@ export class App extends React.Component {
 
       <Grid stackable columns={1}>
           <Grid.Column>
-            <Segment>
+            <Segment width={16}>
               <h1 className="bigtitle">
                 Logs analyzer{' '}
                 <Button primary onClick={() => {
@@ -58,13 +58,13 @@ export class App extends React.Component {
         </Grid>
 
         <Grid stackable doubling columns={2}>
-          <Grid.Column>
+          <Grid.Column width={6}>
             <Segment>
               <Filters handler={this.handler} filter={this.state.filter} time={this.state.timeline}/>
               <SystemData value={this.state.logs}/>
             </Segment>
           </Grid.Column>
-          <Grid.Column>
+          <Grid.Column width={10}>
             <Segment style={{ marginBottom: '20%' }}>
               <Interpret value={this.state.logs} filter={this.state.filter} time={this.state.timeline} handler={this.handler}/>
             </Segment>
