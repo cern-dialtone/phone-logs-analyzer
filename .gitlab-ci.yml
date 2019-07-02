@@ -56,7 +56,7 @@ redeploy_next:
     OPENSHIFT_NAMESPACE: phone-logs-analyzer # this is the name of your Openshift project (i.e. the site name)
     OPENSHIFT_APP_NAME: phone-logs-analyzer # this is the name of the ImageStream/DeploymentConfig objects created by oc new-app. Typically, this will be the name of the GitLab project.
     IMAGE_TYPE: production
-    DEPLOYMENT_CONF_NAME: webapp
+    DEPLOYMENT_CONF_NAME: phone-logs-analyzer
   script:
   - "oc import-image $OPENSHIFT_APP_NAME --all --server=$OPENSHIFT_SERVER --namespace=$OPENSHIFT_NAMESPACE --from=$GITLAB_SERVER/$GITLAB_NAMESPACE/$GITLAB_APP_NAME/$IMAGE_TYPE --confirm --token=$DEPLOYMENT_TOKEN_PROD"
   # wait a bit for redeployment to happen then monitor the deployment status
