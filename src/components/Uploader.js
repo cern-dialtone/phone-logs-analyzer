@@ -34,7 +34,7 @@ export class App extends React.Component {
 
     for (let i=0; str.charAt(i); i++)
     {
-      if (str.charAt(i) === '\n' && str.charAt(i) === '\n' && str.charAt(i+1) !== ' ')
+      if (str.charAt(i) === '\n' && str.charAt(i+1) !== ' ')
         cut = 1;
       if (cut) {
         next.push(tmp);
@@ -49,49 +49,116 @@ export class App extends React.Component {
 
   split_data(array) {
     let next = [];
-    let cut = 0;
     let tmp = "";
     let count = 0;
 
-    for (let a = 0; a < array.length; a++) {
-      next[a] = [];
+    for (let b = 0; b < array.length; b++) {
+      next[b] = [];
       count = 0;
-      for (let i=0; array[a].charAt(i); i++)
+      tmp = "";
+      for (let i=0; array[b].charAt(i); i++)
       {
-        if (array[a].substr(i, 3) === ' | ' && count < 2)
+        if (array[b].substr(i, 3) === ' | ' && count < 3)
         {
           i += 2;
           count++;
-          next[a].push(tmp);
+          next[b].push(tmp);
           tmp = "";
         }
         else
-          tmp += array[a].charAt(i);
+          tmp += array[b].charAt(i);
       }
-      next[a].push(tmp);
+      next[b].push(tmp);
     }
     return (next);
   }
 
   convertToJson(e) {
     let tmp;
+    let tmp_date;
     let next = [];
 
-    tmp = this.split_actions(e);
+    tmp = e.split("\n");
+    tmp.pop();
     tmp = this.split_data(tmp);
-    for (let a = 0; a < tmp.length; a++){
-
-      tmp[a][2] = tmp[a][2].split('\'');
-      tmp[a][2] = tmp[a][2].join('"');
-      tmp[a][2] = tmp[a][2].split('undefined');
-      tmp[a][2] = tmp[a][2].join('""');
-    console.log(tmp[a][2]);
-      tmp[a][2] = JSON.parse("["+tmp[a][2]+"]");}
+    for (let a = 0; a < tmp.length; a++) {
+      tmp[a][3] = JSON.parse(tmp[a][3]);
+    }
     console.log(tmp);
+    for (let a = 0; a < tmp.length; a++) {
+      next[a] = [];
+      console.log("NOT processed json : ", tmp[a]);
+      tmp_date = new Date(tmp[a][1]).toString();
+      if  (typeof tmp[a][3][0] === "object")
+        next[a].push(JSON.stringify(Object.keys(tmp[a][3][0])[0]));
+      else
+        next[a].push(tmp[a][3][0]);
+      if (tmp[a][3][1])
+        next[a].push(tmp[a][3][1]);
+      else
+        next[a].push(tmp[a][3][0]);
+      next[a].push(tmp_date);
+      console.log("Processed json : ", next[a]);
+    }
+    next.push({
+      "system":{
+         "os":{
+            "name":"Mac OS X",
+            "version":"10_14_4",
+            "resolution":"2560 x 1440",
+            "aspectRatio":"1.78",
+            "isMobileDevice":false
+         },
+         "browser":{
+            "name":"Chrome",
+            "version":"74.0.3729.169",
+            "isPromisesSupported":true
+         },
+         "webrtc":{
+            "enabled":true,
+            "ortc":false,
+            "webSocketsSupported":true,
+            "isAudioContextSupported":true,
+            "isSctpDataChannelsSupported":true,
+            "isRtpDataChannelsSupported":true
+         },
+         "devices":{
+            "getUserMediaAvailable":true,
+            "hasMicrophonePermissions":true,
+            "canChangeOutputDevice":true,
+            "speakers":{
+               "available":true,
+               "count":3,
+               "labels":[
+                  "Default - Internal Microphone (Built-in)",
+                  "Internal Microphone (Built-in)",
+                  "HD Pro Webcam C920 (046d:082d)"
+               ]
+            },
+            "microphones":{
+               "available":true,
+               "count":3,
+               "labels":[
+                  "Default - Internal Microphone (Built-in)",
+                  "Internal Microphone (Built-in)",
+                  "HD Pro Webcam C920 (046d:082d)"
+               ]
+            }
+         },
+         "ip":{
+            "address":"Public: 194.12.179.126",
+            "public":true,
+            "ipv4":true
+         }
+      }
+   });
+   console.log(tmp);
+    return (JSON.stringify(next));
   }
 
   changePanel(e) {
     e = this.convertToJson(e);
+    this.setState({ logs: e });
     if (isJson(e)) {
       document.getElementById('interpret').classList.toggle('active');
       document.getElementById('home').classList.toggle('active');

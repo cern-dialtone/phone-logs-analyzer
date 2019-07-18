@@ -76,7 +76,7 @@ export class Interpret extends React.Component {
         table.push(<Table.Row style={{ backgroundColor: getColor(obj[list[i]]) }} key={i+"_tablerow"}>
           <Table.Cell style={{ width: 'min-content' }}>{getType(obj[list[i]])}</Table.Cell>
           <Table.Cell style={{ wordWrap: 'break-word', maxHeight: '300px' }}>{getInfos(obj[list[i]], i)}{this.findtreetomake(obj[list[i]], i)}</Table.Cell>
-          <Table.Cell style={{ width: '30px' }}>{getTime(obj[list[i]], [minusdate], i)} <span style={{ float: 'right' }} className="date">{obj[list[i]][obj[list[i]].length-1]}</span></Table.Cell></Table.Row>);
+          <Table.Cell style={{ width: '30px' }}>{getTime(obj[list[i]], [minusdate], i)} <span style={{ float: 'right' }} className="date" key={i+"_span"}>{obj[list[i]][obj[list[i]].length-1]}</span></Table.Cell></Table.Row>);
       }
     }
     if (document.getElementById('events_nbr'))

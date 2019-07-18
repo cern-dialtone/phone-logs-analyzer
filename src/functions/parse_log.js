@@ -9,6 +9,7 @@ export function getType(txt) {
     if (!txt || !txt[0])
       return;
     let data = null;
+    console.log(txt);
     if (txt[0].indexOf('APP:') > -1)
       data = txt[0].split('%c')[1];
     else if (txt[0].indexOf('|') > -1)
@@ -31,6 +32,7 @@ export function getType(txt) {
     if (!txt || !txt[0])
       return;
     let data = null;
+    console.log(txt);
     if (txt[0].indexOf('|') > -1)
       data = txt[0].split('|')[2];
     else if (txt[0].indexOf('APP:') > -1)
