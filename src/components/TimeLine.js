@@ -50,6 +50,7 @@ export class TimeLine extends React.Component {
   componentDidUpdate() {
     if (!this.props.value)
       return;
+      console.log(this.props.value);
     let logs = convertJson(this.props.value);
     let canvas = document.getElementById('canvas');
     let canv = canvas.getContext('2d');
@@ -61,7 +62,8 @@ export class TimeLine extends React.Component {
     let labels = [];
     let count = 0;
     for (let i = 0; Object.keys(logs)[i]; i++) {    // counting number of events by date
-      date = logs[i][logs[i].length - 1];
+      console.log(logs[Object.keys(logs)[i]]);
+      date = logs[Object.keys(logs)[i]][logs[Object.keys(logs)[i]].length - 1];
       if (date && date_list[date] >= 1 && (!this.props.filter || (logs[Object.keys(logs)[i]][0] && indexOfArray(logs[Object.keys(logs)[i]][0], this.props.filter)))) {
         date_list[date]++;
         count++;

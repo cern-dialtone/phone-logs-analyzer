@@ -16,7 +16,10 @@ export function convertJson(json) {
    * 
    * @return {object || boolean} - Will return converted json or false if it fail. 
    */
-  if (isJson(json)) return JSON.parse(json);
+  let tmp;
+
+  tmp = (isJson(json)) ? JSON.parse(json) : false;
+  if (isJson(json) && tmp[tmp.length-1].system) return JSON.parse(json);
   return false;
 }
 export function isJson(txt) {

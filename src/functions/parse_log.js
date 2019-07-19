@@ -6,22 +6,21 @@ export function getType(txt) {
    * 
    * @param {object} txt - event object 
    */
-    if (!txt || !txt[0])
+    if (!txt || !txt[1])
       return;
     let data = null;
-    console.log(txt);
-    if (txt[0].indexOf('APP:') > -1)
-      data = txt[0].split('%c')[1];
-    else if (txt[0].indexOf('|') > -1)
-      data = txt[0].split('|')[1];
-    else if (txt[0].indexOf('hashed token:') > -1)
-      data = txt[0].split(':')[0];
-    else if (txt[0].indexOf('Warning:') > -1)
+    if (txt[1].indexOf('APP:') > -1)
+      data = txt[1].split('%c')[1];
+    else if (txt[1].indexOf('|') > -1)
+      data = txt[1].split('|')[1];
+    else if (txt[1].indexOf('hashed token:') > -1)
+      data = txt[1].split(':')[0];
+    else if (txt[1].indexOf('Warning:') > -1)
       data = 'Warning';
-    else if (txt[0].indexOf(':') > -1)
-      data = txt[0].substr(0, txt[0].lastIndexOf(':'));
-    else if (typeof txt[0] == "string")
-      data = txt[0];
+    else if (txt[1].indexOf(':') > -1)
+      data = txt[1].substr(0, txt[1].lastIndexOf(':'));
+    else if (typeof txt[1] == "string")
+      data = txt[1];
     return data;
   }
   export function getInfos(txt) {
@@ -29,22 +28,21 @@ export function getType(txt) {
      * 
      * @param {object} txt - event object
      */
-    if (!txt || !txt[0])
+    if (!txt || !txt[1])
       return;
     let data = null;
-    console.log(txt);
-    if (txt[0].indexOf('|') > -1)
-      data = txt[0].split('|')[2];
-    else if (txt[0].indexOf('APP:') > -1)
-      data = txt[0].split('%c')[2];
-    else if (txt[0].indexOf('hashed token:') > -1)
-      data = txt[0].split(':')[1];
-    else if (txt[0].indexOf('Warning:') > -1)
-      data = txt[0].substr(txt[0].indexOf(':')+1, txt[0].indexOf(':').length);
-    else if (txt[0].indexOf(':') > -1)
-      data = txt[0].substr(txt[0].lastIndexOf(':')+1, txt[0].lastIndexOf(':').length);
-    else if (typeof txt[0] == "string")
-      data = txt[0];
+    if (txt[1].indexOf('|') > -1)
+      data = txt[1].split('|')[2];
+    else if (txt[1].indexOf('APP:') > -1)
+      data = txt[1].split('%c')[2];
+    else if (txt[1].indexOf('hashed token:') > -1)
+      data = txt[1].split(':')[1];
+    else if (txt[1].indexOf('Warning:') > -1)
+      data = txt[1].substr(txt[1].indexOf(':')+1, txt[1].indexOf(':').length);
+    else if (txt[1].indexOf(':') > -1)
+      data = txt[1].substr(txt[1].lastIndexOf(':')+1, txt[1].lastIndexOf(':').length);
+    else if (typeof txt[1] == "string")
+      data = txt[1];
 
     if (data && data.length > 100) {
       let id = Math.round(Math.random() * 10000);
@@ -68,7 +66,7 @@ export function getType(txt) {
      * 
      * @return {string} - ex: +5s
      */
-    if (!txt || !txt[0] || !start || !start[0])
+    if (!txt || !txt[1] || !start || !start[0])
       return;
     let current_time = parseInt(Date.parse(txt[txt.length-1]));
     let start_time = parseInt(Date.parse(start[start.length-1]));

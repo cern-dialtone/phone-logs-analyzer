@@ -1,6 +1,6 @@
 import React from 'react';
 import { UploadForm } from './UploadForm';
-import { isJson } from '../functions/showCat';
+import { convertJson } from '../functions/showCat';
 import { SystemData } from './SystemData';
 import { Filters } from './Filters';
 import { Interpret } from './Interpret';
@@ -26,6 +26,8 @@ export class App extends React.Component {
   loadJson(e) {
     this.setState({ logs: e });
   }
+
+  
 
   split_actions(str) {
     let next = [];
@@ -77,94 +79,65 @@ export class App extends React.Component {
     let tmp;
     let tmp_date;
     let next = [];
+    let system = false;
+    let diff = 0; // used to jump system rows and stay sync (avoid this: 0,1,3,4,5,7...)
 
     tmp = e.split("\n");
     tmp.pop();
     tmp = this.split_data(tmp);
     for (let a = 0; a < tmp.length; a++) {
-      tmp[a][3] = JSON.parse(tmp[a][3]);
-    }
-    console.log(tmp);
-    for (let a = 0; a < tmp.length; a++) {
-      next[a] = [];
-      console.log("NOT processed json : ", tmp[a]);
-      tmp_date = new Date(tmp[a][1]).toString();
-      if  (typeof tmp[a][3][0] === "object")
-        next[a].push(JSON.stringify(Object.keys(tmp[a][3][0])[0]));
-      else
-        next[a].push(tmp[a][3][0]);
-      if (tmp[a][3][1])
-        next[a].push(tmp[a][3][1]);
-      else
-        next[a].push(tmp[a][3][0]);
-      next[a].push(tmp_date);
-      console.log("Processed json : ", next[a]);
-    }
-    next.push({
-      "system":{
-         "os":{
-            "name":"Mac OS X",
-            "version":"10_14_4",
-            "resolution":"2560 x 1440",
-            "aspectRatio":"1.78",
-            "isMobileDevice":false
-         },
-         "browser":{
-            "name":"Chrome",
-            "version":"74.0.3729.169",
-            "isPromisesSupported":true
-         },
-         "webrtc":{
-            "enabled":true,
-            "ortc":false,
-            "webSocketsSupported":true,
-            "isAudioContextSupported":true,
-            "isSctpDataChannelsSupported":true,
-            "isRtpDataChannelsSupported":true
-         },
-         "devices":{
-            "getUserMediaAvailable":true,
-            "hasMicrophonePermissions":true,
-            "canChangeOutputDevice":true,
-            "speakers":{
-               "available":true,
-               "count":3,
-               "labels":[
-                  "Default - Internal Microphone (Built-in)",
-                  "Internal Microphone (Built-in)",
-                  "HD Pro Webcam C920 (046d:082d)"
-               ]
-            },
-            "microphones":{
-               "available":true,
-               "count":3,
-               "labels":[
-                  "Default - Internal Microphone (Built-in)",
-                  "Internal Microphone (Built-in)",
-                  "HD Pro Webcam C920 (046d:082d)"
-               ]
-            }
-         },
-         "ip":{
-            "address":"Public: 194.12.179.126",
-            "public":true,
-            "ipv4":true
-         }
+      if (tmp[a][3] && tmp[a][2] === "SYSTEM") {
+        system = tmp[a][3].substr(1,tmp[a][3].length-2);
+        system = system.split("\\\"");
+        system = system.join("\"");
+        system = JSON.parse(system);
+        diff++; // jump
+        continue;
       }
-   });
-   console.log(tmp);
+      next[a-diff] = [];
+      tmp_date = new Date(tmp[a][1]).toString();
+      
+      // Filter part (Type)
+        next[a-diff].push(tmp[a][2]);
+      
+      // Action Name part
+      if (tmp[a].length < 4)
+        next[a-diff].push(tmp[a][2]);
+      else if (tmp[a][3].length >= 1)
+        next[a-diff].push(tmp[a][3]);
+      else
+        next[a-diff].push(tmp[a][3]);
+      
+      // Object Part
+      if (tmp[a].length < 4)
+        next[a-diff].push(tmp[a][2]);
+      else if (typeof tmp[a][3] === "object" && tmp[a][3].length > 1)
+        next[a-diff].push(JSON.parse(tmp[a][3]));
+      else
+        next[a-diff].push(tmp[a][3]);
+
+      // Adding Date ALWAYS as last parameter
+      next[a-diff].push(tmp_date);
+    }
+    next.push(system);
     return (JSON.stringify(next));
   }
 
   changePanel(e) {
+    let tmp;
+
     e = this.convertToJson(e);
+    tmp = convertJson(e);
+    console.log(tmp);
     this.setState({ logs: e });
-    if (isJson(e)) {
+    console.log((tmp) ? "Valid Json" : "Invalid Json", (tmp && tmp[tmp.length-1] && tmp[tmp.length-1].system) ? "got system data" : "No system data");
+    if (tmp && tmp[tmp.length-1] && tmp[tmp.length-1].system) {
       document.getElementById('interpret').classList.toggle('active');
       document.getElementById('home').classList.toggle('active');
     }
   }
   render() {
+    let tmp;
     return (
     <div>
       <div className="screen" id="home">
@@ -204,7 +177,7 @@ export class App extends React.Component {
         </Grid>
       </div>
       <Events value={this.state.logs}/>
-      <TimeLine value={isJson(this.state.logs) ? this.state.logs : null} handler={this.handler} filter={this.state.filter}/>
+      <TimeLine value={((tmp = convertJson(this.state.logs)) && tmp[tmp.length-1].system) ? this.state.logs : null} handler={this.handler} filter={this.state.filter}/>
     </div>);
   }
 }
