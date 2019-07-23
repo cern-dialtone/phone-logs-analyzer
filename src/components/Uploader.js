@@ -1,6 +1,6 @@
 import React from 'react';
 import { UploadForm } from './UploadForm';
-import { convertJson } from '../functions/showCat';
+import { convertJson, isJson } from '../functions/showCat';
 import { SystemData } from './SystemData';
 import { Filters } from './Filters';
 import { Interpret } from './Interpret';
@@ -94,30 +94,31 @@ export class App extends React.Component {
         diff++; // jump
         continue;
       }
+      if ("LOGTONE_INTONE_OUTACTION".search(tmp[a][2]) > -1 &&
+          JSON.parse(tmp[a][3])[Object.keys(tmp[a][3])[0]] === undefined) {
+        diff++;
+        continue;
+      }
       next[a-diff] = [];
       tmp_date = new Date(tmp[a][1]).toString();
       
       // Filter part (Type)
-        next[a-diff].push(tmp[a][2]);
-      
-      // Action Name part
-      if (tmp[a].length < 4)
-        next[a-diff].push(tmp[a][2]);
-      else if (tmp[a][3].length >= 1)
-        next[a-diff].push(tmp[a][3]);
-      else
-        next[a-diff].push(tmp[a][3]);
-      
-      // Object Part
-      if (tmp[a].length < 4)
-        next[a-diff].push(tmp[a][2]);
-      else if (typeof tmp[a][3] === "object" && tmp[a][3].length > 1)
-        next[a-diff].push(JSON.parse(tmp[a][3]));
-      else
-        next[a-diff].push(tmp[a][3]);
-
+      if ("LOGTONE_INTONE_OUTACTION".search(tmp[a][2]) > -1) {
+        next[a-diff].push(tmp[a][2]);   // [0] Filter
+        while (tmp[a][3].indexOf('\\') > -1)
+          tmp[a][3] = tmp[a][3].replace(tmp[a][3].substr(tmp[a][3].indexOf('\\'), 2), "");
+        if (typeof JSON.parse(tmp[a][3]) == "string")
+            next[a-diff].push(JSON.parse(tmp[a][3])); // [1] Action name
+        else if (JSON.parse(tmp[a][3])[Object.keys(tmp[a][3])[0]] !== undefined)
+          next[a-diff].push(JSON.parse(tmp[a][3])[Object.keys(tmp[a][3])[0]]); // [1] Action name
+      }
+      else {
+        console.log("What", tmp[a]);
+        next[a-diff].push(tmp[a][0]);   // [0] Filter
+        next[a-diff].push(tmp[a][2]);   // [1] Action Name
+      }
       // Adding Date ALWAYS as last parameter
-      next[a-diff].push(tmp_date);
+      next[a-diff].push(tmp_date);                  // [3] Date
     }
     next.push(system);
     return (JSON.stringify(next));
@@ -128,9 +129,7 @@ export class App extends React.Component {
 
     e = this.convertToJson(e);
     tmp = convertJson(e);
-    console.log(tmp);
     this.setState({ logs: e });
-    console.log((tmp) ? "Valid Json" : "Invalid Json", (tmp && tmp[tmp.length-1] && tmp[tmp.length-1].system) ? "got system data" : "No system data");
     if (tmp && tmp[tmp.length-1] && tmp[tmp.length-1].system) {
       document.getElementById('interpret').classList.toggle('active');
       document.getElementById('home').classList.toggle('active');

@@ -19,7 +19,7 @@ export function convertJson(json) {
   let tmp;
 
   tmp = (isJson(json)) ? JSON.parse(json) : false;
-  if (isJson(json) && tmp[tmp.length-1].system) return JSON.parse(json);
+  if (isJson(json) && tmp[tmp.length-1] && tmp[tmp.length-1].system) return JSON.parse(json);
   return false;
 }
 export function isJson(txt) {
@@ -28,8 +28,7 @@ export function isJson(txt) {
   } catch (e) {
     return false;
   }
-  let data = JSON.parse(txt);
-  return txt && data[data.length-1] && data[data.length-1].system ? true : false;
+  return txt ? true : false;
 }
 export function indexOfArray(txt, values) {
   for (let a = 0; txt && values && values[a]; a++)
