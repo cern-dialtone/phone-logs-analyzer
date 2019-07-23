@@ -16,14 +16,6 @@ it('getInfos works', () => {
     expect(getInfos(["Fri May 31 2019 14:48:45 GMT+0200 (Central European Summer Time) | sip.ua | configuration parameters after validation:"])).toBe(" configuration parameters after validation:");
 });
 
-it('getTime works', () => {
-    expect(getTime(["| Fri, 31 May 2019 12:48:45 GMT "], ["| Fri, 31 May 2019 12:49:45 GMT "])).toBe("+"+((parseInt(Date.parse("| Fri, 31 May 2019 12:48:45 GMT ")) - parseInt(Date.parse("| Fri, 31 May 2019 12:49:45 GMT ")))/1000)+"s");
-    expect(getTime(["| Fri, 31 May 2019 12:49:45 GMT "], ["| Fri, 31 May 2019 12:45:45 GMT "])).toBe("+"+((parseInt(Date.parse("| Fri, 31 May 2019 12:49:45 GMT ")) - parseInt(Date.parse("| Fri, 31 May 2019 12:45:45 GMT ")))/1000)+"s");
-    expect(getTime([null], ["| Fri, 31 May 2019 12:45:45 GMT "])).toBe();
-    expect(getTime([null], [null])).toBe();
-    expect(getTime(["| Fri, 31 May 2019 12:45:45 GMT "], [null])).toBe();
-});
-
 it('getColor works', () => {
     expect(getColor(["color: #4286f4"])).toBe("rgba(66, 134, 244, 0.3)");
     expect(getColor(["color: #428"])).toBe("transparent");
