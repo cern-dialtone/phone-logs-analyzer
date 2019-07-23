@@ -146,7 +146,7 @@ export class Interpret extends React.Component {
   treemodeavailable() {
     if (!document.getElementById('treemode') || !document.getElementById('treemodetoggle'))
       return;
-    if (!(tmp = convertJson(this.props.value))) {
+    if (!convertJson(this.props.value)) {
       document.getElementById('treemode').style.opacity = '0.5';
       document.getElementById('treemodetoggle').setAttribute('disabled', '');
     }
