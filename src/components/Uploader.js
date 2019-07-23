@@ -1,6 +1,6 @@
 import React from 'react';
 import { UploadForm } from './UploadForm';
-import { convertJson, isJson } from '../functions/showCat';
+import { convertJson } from '../functions/showCat';
 import { SystemData } from './SystemData';
 import { Filters } from './Filters';
 import { Interpret } from './Interpret';

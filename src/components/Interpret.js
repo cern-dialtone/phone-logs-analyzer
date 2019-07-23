@@ -144,7 +144,6 @@ export class Interpret extends React.Component {
     {this.maketree(data, this.props.filter, this.props.time)}</Table.Body></Table> : <div style={{ maxWidth: '100%', overflow: 'auto' }}>{this.props.value}</div>;
   }
   treemodeavailable() {
-    let tmp;
     if (!document.getElementById('treemode') || !document.getElementById('treemodetoggle'))
       return;
     if (!(tmp = convertJson(this.props.value))) {

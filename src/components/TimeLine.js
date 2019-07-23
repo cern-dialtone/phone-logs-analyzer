@@ -59,7 +59,6 @@ export class TimeLine extends React.Component {
     let date = null;
     let date_list = [];
     let labels = [];
-    let count = 0;
     for (let i = 0; Object.keys(logs)[i]; i++) {    // counting number of events by date
       date = logs[Object.keys(logs)[i]][logs[Object.keys(logs)[i]].length - 1];
       if (date && date_list[date] >= 1 && (!this.props.filter || (logs[Object.keys(logs)[i]][0] && indexOfArray(logs[Object.keys(logs)[i]][0], this.props.filter)))) {
