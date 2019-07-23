@@ -63,11 +63,9 @@ export class TimeLine extends React.Component {
       date = logs[Object.keys(logs)[i]][logs[Object.keys(logs)[i]].length - 1];
       if (date && date_list[date] >= 1 && (!this.props.filter || (logs[Object.keys(logs)[i]][0] && indexOfArray(logs[Object.keys(logs)[i]][0], this.props.filter)))) {
         date_list[date]++;
-        count++;
       }
       else if (date && !date_list[date] && (!this.props.filter || (logs[Object.keys(logs)[i]][0] && indexOfArray(logs[Object.keys(logs)[i]][0], this.props.filter)))) {
         date_list[date] = 1;
-        count++;
         labels.push("");   // add a blank value at labels array because there is no "hide labels" parameter in chartJs yet.
       }
     }
